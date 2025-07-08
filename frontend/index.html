@@ -1,0 +1,3141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Coberturas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary-color: rgba(11, 11, 124, 0.897);
+  --primary-dark: rgb(9, 9, 100);
+  --secondary-color: #f0f8ff;
+  --border-color: #4169E1;  
+  --text-color: #555;
+  --background-color: #f8f8f8;
+  --card-bg: white;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --finalized-color: #6c757d;
+  --canceled-color: #dc3545;
+  --admin-color: #6610f2;
+  --consultant-color: #17a2b8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  text-align: center;
+  padding: 20px;
+  line-height: 1.6;
+  background-image: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: none;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  animation: fadeInUp 0.8s ease;
+}
+
+.login-container h1 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.login-container h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: var(--primary-color);
+  border-radius: 3px;
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.login-form input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(11, 11, 124, 0.2);
+  outline: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.login-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
+
+.user-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  gap: 10px;
+}
+
+.user-info-center {
+  display: Center;
+  align-items: center;
+  gap: 10px;
+}
+
+.logout-btn {
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: #bd2130;
+  transform: translateY(-2px);
+}
+
+.admin-btn {
+  background: var(--admin-color);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  margin-left: 10px;
+}
+
+.admin-btn:hover {
+  background: #520dc2;
+  transform: translateY(-2px);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  animation: fadeInDown 0.8s ease;
+  position: relative;
+}
+
+.logo {
+  max-width: 100%;
+  height: auto;
+  max-height: 80px;
+  margin-bottom: 10px;
+  transition: transform 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.03);
+}
+
+h1 {
+  color: var(--primary-color);
+  margin: 0;
+  font-size: 24px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  position: relative;
+  padding-bottom: 10px;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: var(--primary-color);
+  border-radius: 3px;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 20px 30px 30px;
+  margin: 0 auto 30px;
+  max-width: 700px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInUp 0.8s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+  text-align: center;
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+input, select {
+  padding: 12px;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(11, 11, 124, 0.2);
+  outline: none;
+  background: white;
+}
+
+button {
+  padding: 14px 25px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 220px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.result {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: var(--secondary-color);
+  border-radius: 12px;
+  border-left: 5px solid var(--border-color);
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+  width: 100%;
+}
+
+.result h3 {
+  color: var(--primary-color);
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 20px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.result h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background: var(--border-color);
+}
+
+.result p {
+  font-size: 16px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.result span {
+  font-weight: bold;
+  color: var(--primary-dark);
+}
+
+.valor-final {
+  font-size: 20px;
+  color: var(--primary-color);
+  background: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  margin: 15px auto;
+  display: inline-block;
+  border: 2px dashed var(--border-color);
+  font-weight: bold;
+}
+
+.btn-success {
+  margin-top: 15px;
+  background: #28a745;
+}
+
+.btn-success:hover {
+  background: #218838;
+}
+
+.currency {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+/* ===== RODAPÉ ===== */
+.footer {
+  background-color: var(--primary-dark);
+  color: white;
+  text-align: center;
+  padding: 15px 0;
+  width: 100%;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+}
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 15px 0;
+  }
+  
+  .footer p {
+    font-size: 12px;
+  }
+}
+/* ===== CORREÇÃO DA BARRA DE ROLAGEM ===== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto; /* Só mostra barra se precisar */
+}
+
+#mainSection {
+  min-height: calc(100vh - 100px); /* Ajuste conforme necessidade */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* Responsividade */
+
+/* Responsividade para celular */
+@media (max-width: 768px) {
+.user-info {
+  position: center; /* ou absolute, dependendo do contexto */
+  bottom: 0;       /* Cola no fundo da tela/container */
+  right: 0;        /* Cola no lado direito da tela/container */
+  justify-content: space-between;
+  width: auto;     /* Ajuste a largura conforme necessário */
+  margin-bottom: 15px;
+  border-radius: 8px;
+  padding: 8px 15px;
+}
+  
+  .user-info-left {
+    flex-wrap: wrap;
+  }
+  
+  .logout-btn, .admin-btn {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  background: white;
+}
+
+.requests-table {
+  min-width: 2400px;
+  width: 100%;
+  font-size: 14px;
+  table-layout: auto;
+}
+
+.requests-table th {
+  white-space: nowrap;
+  padding: 12px 15px;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    border: none;
+    padding: 5px;
+  }
+  
+  .requests-table {
+    font-size: 12px;
+  }
+}
+
+/* Template PDF com plano de fundo */
+#pdf-template {
+  position: absolute;
+  left: -9999px;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  font-family: Arial;
+  font-size: 12pt;
+  box-sizing: border-box;
+  background-image: url('./img/fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+}
+
+/* Quadro de Solicitações */
+.requests-container {
+  display: none;
+  width: 100%px;
+  max-width: none;
+  margin: 0;
+  padding: 20px 5px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  animation: fadeIn 0.5s ease;
+  overflow: hidden;
+}
+
+.finalized-container {
+  background-color: #f8f9fa;
+}
+
+.canceled-container {
+  background-color: #fff8f8;
+}
+
+.requests-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 100;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.finalized-header {
+  background-color: #e9ecef;
+}
+
+.canceled-header {
+  background-color: #fce8e8;
+}
+
+.requests-header h2 {
+  color: var(--primary-color);
+}
+
+.finalized-header h2 {
+  color: var(--finalized-color);
+}
+
+.canceled-header h2 {
+  color: var(--danger-color);
+}
+
+.table-container {
+  overflow-x: auto;
+  max-width: 100vw; /* Limitar à largura da viewport */
+}
+
+.requests-table th,
+.requests-table td {
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.requests-table th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+.finalized-table th {
+  background-color: var(--finalized-color);
+}
+
+.canceled-table th {
+  background-color: var(--danger-color);
+}
+
+.requests-table tr {
+  height: 60px;
+}
+
+.requests-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.requests-table tr:hover {
+  background-color: #e9ecef;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: var(--warning-color);
+  color: #333;
+}
+
+.status-signed {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.status-finalized {
+  background-color: var(--finalized-color);
+  color: white;
+}
+
+.status-canceled {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.action-btn {
+  padding: 6px 10px;
+  font-size: 13px;
+  margin-right: 3px;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.back-btn {
+  background-color: #6c757d;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.upload-section {
+  margin-top: 15px;
+  padding: 15px;
+}
+
+.file-input-btn {
+  padding: 8px 15px;
+}
+
+.upload-section h3 {
+  margin-bottom: 15px;
+  color: var(--primary-color);
+}
+
+.file-input-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.file-input-wrapper input[type=file] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-input-btn {
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.file-input-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.file-name {
+  display: block;
+  margin-top: 10px;
+  font-style: italic;
+  color: #666;
+}
+
+.nav-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  padding-top: 60px; /* Espaço para o user-info */
+}
+
+.tab-btn {
+  padding: 10px 25px;
+  margin: 0 8px 10px;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tab-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.tab-btn:hover:not(.active) {
+  background-color: #d0d0d0;
+}
+
+/* Estilos melhorados para as colunas de aprovação */
+.requests-table th:nth-child(15),
+.requests-table th:nth-child(16),
+.requests-table th:nth-child(17) {
+  min-width: 140px;
+}
+
+.requests-table td:nth-child(15),
+.requests-table td:nth-child(16),
+.requests-table td:nth-child(17) {
+  min-width: 140px;
+}
+
+.requests-table select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+}
+
+/* Campo de desconto editável */
+.desconto-input {
+  width: 100px;
+  padding: 8px;
+  text-align: center;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+/* Botão de reabrir */
+.btn-reopen {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.btn-reopen:hover {
+  background-color: #e0a800;
+}
+
+/* Feedback para cancelamento */
+.canceled-feedback {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--danger-color);
+  color: white;
+  padding: 15px 30px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: slideDown 0.5s ease, fadeOut 1s ease 2.5s forwards;
+}
+
+@keyframes slideDown {
+  from { top: -50px; opacity: 0; }
+  to { top: 20px; opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; visibility: hidden; }
+}
+
+.permission-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.permission-admin {
+  background-color: #007bff;
+  color: white;
+}
+
+.permission-finance {
+  background-color: #28a745;
+  color: white;
+}
+
+.permission-operations {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.permission-consultant {
+  background-color: var(--consultant-color);
+  color: white;
+}
+
+/* Modal de gerenciamento de usuários */
+.users-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.close-modal {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #555;
+}
+
+.user-list {
+  margin-top: 20px;
+}
+
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.user-email {
+  font-weight: bold;
+  min-width: 200px;
+}
+
+.user-actions input {
+  padding: 8px;
+  width: 150px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.user-role {
+  min-width: 120px;
+}
+
+.user-actions button {
+  padding: 8px 12px;
+  width: auto;
+  margin-top: 0;
+  font-size: 14px;
+}
+
+/* Estilo para o botão de visualização de senha */
+.toggle-password {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-left: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.password-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  border-radius: 5px 0 0 5px;
+}
+
+.role-select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* Botão de consultor */
+.consultant-btn {
+  background-color: var(--consultant-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 14px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 15px;
+}
+
+.consultant-btn:hover {
+  background-color: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
+/* ===== CORREÇÕES DE ESPAÇO ===== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#loginSection, 
+#mainSection {
+  flex: 1;
+}
+
+.footer {
+  background-color: var(--primary-dark);
+  color: white;
+  text-align: center;
+  padding: 1px 0;
+  width: 100%;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Remove espaço extra na tela de login */
+.login-container {
+  margin-top: 2;
+  margin-bottom: 0;
+}
+
+/* Ajusta a barra de rolagem para aparecer só quando precisa */
+body {
+  overflow-y: auto;
+}
+</style>
+</head>
+<body>
+<div id="loginSection" class="login-container">
+  <div class="header">
+    <img src="./img/GSCIA-FACILITIES-HORIZONTAL.png.webp" alt="Logo Grupo Solução" class="logo">
+    <h1>Acesso ao Sistema</h1>
+  </div>
+  
+  <!-- Formulário de Login Regular -->
+  <form id="loginForm" class="login-form">
+    <div class="form-group">
+      <label for="loginEmail">E-mail</label>
+      <input type="email" id="loginEmail" name="email" placeholder="Seu e-mail corporativo" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="loginPassword">Senha</label>
+      <div class="password-wrapper">
+        <input type="password" id="loginPassword" name="password" placeholder="Sua senha" required>
+        <span class="toggle-password" onclick="togglePasswordVisibility()">
+          <i class="fas fa-eye"></i>
+        </span>
+      </div>
+    </div>
+    
+    <button type="submit" id="loginBtn" class="login-btn">Entrar</button>
+    
+    <div style="margin-top: 20px; text-align: center; position: relative;">
+      <div style="position: relative; margin: 15px 0;">
+        <hr style="border: 0; border-top: 1px solid #ddd;">
+        <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; color: #777;">
+          ou
+        </span>
+      </div>
+      
+      <button type="button" id="consultantBtn" class="consultant-btn">
+        <i class="fas fa-user"></i> Acessar como Consultor
+      </button>
+    </div>
+  </form>
+  
+  <!-- Formulário de Acesso como Consultor (inicialmente oculto) -->
+  <form id="consultantForm" class="login-form" style="display: none;">
+    <div class="form-group">
+      <label for="consultantName">Nome do Consultor</label>
+      <input type="text" id="consultantName" placeholder="Seu nome completo" required>
+    </div>
+    
+    <button type="button" id="confirmConsultantBtn" class="consultant-btn">
+      <i class="fas fa-check"></i> Confirmar
+    </button>
+    
+    <div style="margin-top: 20px; text-align: center;">
+      <button type="button" id="backToLoginBtn" class="login-btn" style="background: #6c757d;">
+        <i class="fas fa-arrow-left"></i> Voltar para Login
+      </button>
+    </div>
+  </form>
+</div>
+
+<div id="mainSection" class="container" style="display: none;">
+  <div class="user-info">
+    <div class="user-info-left">
+      <span id="userName">Usuário</span>
+      <button id="manageUsersBtn" class="admin-btn" style="display: none;">
+        <i class="fas fa-users-cog"></i> Admin
+      </button>
+    </div>
+    <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+  </div>
+  
+  <div class="tabs">
+    <button class="tab-btn active" id="calcTab">Cotação</button>
+    <button class="tab-btn" id="requestsTab">Quadro de Solicitações</button>
+    <button class="tab-btn" id="finalizedTab">Finalizados</button>
+    <button class="tab-btn" id="canceledTab">Cancelados</button>
+  </div>
+  
+  <div id="calculatorSection">
+    <div class="card">
+      <div class="header">
+        <img src="./img/GSCIA-FACILITIES-HORIZONTAL.png.webp" alt="Logo Grupo Solução" class="logo">
+        <h1>Cotações De Coberturas e Diárias</h1>
+      </div>
+      
+      <form id="calcForm">
+        <div class="form-group">
+          <label for="condominio">Condomínio</label>
+          <input type="text" id="condominio" name="condominio" placeholder="Nome do condomínio" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="data_inicio">Data Início</label>
+          <input type="date" id="data_inicio" name="data_inicio" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="data_fim">Data Fim</label>
+          <input type="date" id="data_fim" name="data_fim" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="Quantidade De Colaboradores">Colaboradores</label>
+          <input type="text" id="Quantidade De Colaboradores" name="Quantidade De Colaboradores" placeholder="Ex.:01" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="Solicitante">Solicitante</label>
+          <input type="text" id="Solicitante" name="Solicitante" placeholder="Ex.:Quem está realizando a cotação" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="E-mail">E-mail</label>
+          <input type="email" id="E-mail" name="E-mail" placeholder="Ex.:E-mail De Cobrança para retorno" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="Observações">Observações</label>
+          <input type="text" id="Observações" name="Observações" placeholder="Ex.:Obs" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="tipo_faturamento">Tipo De Faturamento</label>
+          <select id="tipo_faturamento" name="tipo_faturamento" required>
+            <option value="">Selecione uma opção</option>
+            <option value="Terceirizado">Terceirizado</option>
+            <option value="Orgânico">Orgânico</option>
+            <option value="Linha Verde">Linha Verde</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="quantidade_dias">Quantidade De Dias</label>
+          <input type="number" id="quantidade_dias" name="quantidade_dias" placeholder="Ex.: 30" min="1" readonly>
+          <small id="alerta-dias" style="color: red; display: none;">
+            ⚠️ Atenção: Para contratos com menos de 11 dias, os valores diários são diferenciados.
+          </small>
+        </div>
+        
+        <div class="form-group">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <label for="cargo">Cargo</label>
+            <small>
+              <a href="#" id="ajudaCargo" style="color: var(--primary-color);">
+                <i class="fas fa-question-circle"></i> Não encontrou o cargo?
+              </a>
+            </small>
+          </div>
+          
+          <select id="cargo" name="cargo" required>
+            <option value="" disabled selected>Selecione um cargo</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Porteiro Diurno">Porteiro Diurno</option>
+            <option value="Porteiro Noturno">Porteiro Noturno</option>
+            <option value="Vigia Diurno">Vigia Diurno</option>
+            <option value="Vigia Noturno">Vigia Noturno</option>
+            <option value="Encarregado De Manutenção">Encarregado De Manutenção</option>
+            <option value="Supervisor Operacional Diurno">Supervisor Operacional Diurno</option>
+            <option value="Supervisor Operacional Noturno">Supervisor Operacional Noturno</option>
+            <option value="Cabo de Turma">Cabo de Turma</option>
+            <option value="Agente de Patrimônio Diurno">Agente de Patrimônio Diurno</option>
+            <option value="Agente de Patrimônio Noturno">Agente de Patrimônio Noturno</option>
+            <option value="Recepcionista Diurno">Recepcionista Diurno</option>
+            <option value="Recepcionista Noturno">Recepcionista Noturno</option>
+            <option value="Zelador">Zelador</option>
+            <option value="Auxiliar de Serviços Gerais">Auxiliar de Serviços Gerais</option>
+            <option value="Assistente Administrativo">Assistente Administrativo</option>
+          </select>
+          
+          <div id="novoCargoContainer" style="display: none; margin-top: 10px;">
+            <input type="text" id="novoCargo" placeholder="Digite o nome do novo cargo" style="width: 100%;">
+            <button type="button" id="enviarSolicitacaoCargo" style="margin-top: 5px;">
+              <i class="fas fa-paper-plane"></i> Enviar solicitação
+            </button>
+          </div>
+        </div>
+        
+        <button type="button" id="calcularBtn" class="pulse">Calcular Cobertura</button>
+      </form>
+      
+      <div id="resultContainer" class="result" style="display: none;">
+        <h3>Resultado da Cotação</h3>
+        <p>Condomínio: <span id="resCondominio"></span></p>
+        <p>Período: <span id="resPeriodo"></span></p>
+        <p>Tipo de Faturamento: <span id="resTipoFaturamento"></span></p>
+        <p>Cargo: <span id="resCargo"></span></p>
+        <p>Quantidade de Dias: <span id="resDias"></span></p>
+        <p>Valor da Diária: <span class="currency" id="resValorDiaria"></span></p>
+        
+        <div class="valor-final">
+          Valor Final: <span class="currency" id="resValor"></span>
+        </div>
+        
+        <button type="button" id="gerarSalvarBtn" class="btn-success">
+          <i class="fas fa-save"></i> Salvar e Gerar PDF
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="requestsSection" class="requests-container">
+    <div class="requests-header">
+      <h2><i class="fas fa-clipboard-list"></i> Quadro de Solicitações</h2>
+      <button class="back-btn" id="backToCalcBtn"><i class="fas fa-arrow-left"></i> Voltar para Cotações</button>
+    </div>
+    
+    <div class="table-container">
+      <table class="requests-table">
+        <thead>
+          <tr>
+            <th>Condomínio</th>
+            <th>Data Solicitação</th>
+            <th>Tipo</th>
+            <th>Função/Turno</th>
+            <th>Qtd<br>Func</th>
+            <th>Qtd<br>Dias</th>
+            <th>Valor</th>
+            <th>Desconto</th>
+            <th>Valor Atualizado</th>
+            <th>Solicitante</th>
+            <th>E-mail</th>
+            <th>Obs</th>
+            <th>Período</th>
+            <th>Status</th>
+            <th>Aprov.<br>Cond</th>
+            <th>Aprovação Do Setor De Coberturas</th>
+            <th>Realizado</th>
+            <th>Faturado</th>
+            <th>PDF<br>Original</th>
+            <th>PDF<br>Assinado</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="requestsTableBody">
+          <!-- Solicitações serão inseridas aqui dinamicamente -->
+        </tbody>
+      </table>
+    </div>
+    
+    <div id="uploadSection" class="upload-section" style="display: none;">
+      <h3>Enviar PDF Assinado</h3>
+      <div class="file-input-wrapper">
+        <button type="button" class="file-input-btn">
+          <i class="fas fa-file-upload"></i> Selecionar PDF
+        </button>
+        <input type="file" id="pdfUpload" accept=".pdf">
+      </div>
+      <div id="fileName" class="file-name"></div>
+      <div>
+        <button type="button" id="confirmUploadBtn" class="btn-success" disabled>
+          <i class="fas fa-check"></i> Confirmar
+        </button>
+        <button type="button" id="cancelUploadBtn" class="btn-danger">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="finalizedSection" class="requests-container finalized-container">
+    <div class="requests-header finalized-header">
+      <h2><i class="fas fa-check-circle"></i> Solicitações Finalizadas</h2>
+      <button class="back-btn" id="backToCalcBtn2"><i class="fas fa-arrow-left"></i> Voltar para Cotações</button>
+    </div>
+    
+    <div class="table-container">
+      <table class="requests-table finalized-table">
+        <thead>
+          <tr>
+            <th>Condomínio</th>
+            <th>Data Solicitação</th>
+            <th>Tipo</th>
+            <th>Função/Turno</th>
+            <th>Qtd<br>Func</th>
+            <th>Qtd<br>Dias</th>
+            <th>Valor</th>
+            <th>Desconto</th>
+            <th>Valor Atualizado</th>
+            <th>Solicitante</th>
+            <th>E-mail</th>
+            <th>Obs</th>
+            <th>Período</th>
+            <th>Status</th>
+            <th>Aprov.<br>Cond</th>
+            <th>Aprovação Do Setor De Coberturas</th>
+            <th>Realizado</th>
+            <th>Faturado</th>
+            <th>PDF<br>Original</th>
+            <th>PDF<br>Assinado</th>
+            <th>Data Finalização</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="finalizedTableBody">
+          <!-- Solicitações finalizadas serão inseridas aqui -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div id="canceledSection" class="requests-container canceled-container">
+    <div class="requests-header canceled-header">
+      <h2><i class="fas fa-times-circle"></i> Solicitações Canceladas</h2>
+      <button class="back-btn" id="backToCalcBtn3"><i class="fas fa-arrow-left"></i> Voltar para Cotações</button>
+    </div>
+    
+    <div class="table-container">
+      <table class="requests-table canceled-table">
+        <thead>
+          <tr>
+            <th>Condomínio</th>
+            <th>Data Solicitação</th>
+            <th>Tipo</th>
+            <th>Função/Turno</th>
+            <th>Qtd<br>Func</th>
+            <th>Qtd<br>Dias</th>
+            <th>Valor</th>
+            <th>Desconto</th>
+            <th>Valor Atualizado</th>
+            <th>Solicitante</th>
+            <th>E-mail</th>
+            <th>Obs</th>
+            <th>Período</th>
+            <th>Status</th>
+            <th>Aprov.<br>Cond</th>
+            <th>Aprovação Do Setor De Coberturas</th>
+            <th>Realizado</th>
+            <th>Faturado</th>
+            <th>PDF<br>Original</th>
+            <th>PDF<br>Assinado</th>
+            <th>Data Cancelamento</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="canceledTableBody">
+          <!-- Solicitações canceladas serão inseridas aqui -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de gerenciamento de usuários -->
+<div id="usersModal" class="users-modal">
+  <div class="modal-content">
+    <button class="close-modal">&times;</button>
+    <h2>Gerenciamento de Usuários</h2>
+    <div id="userList" class="user-list"></div>
+  </div>
+</div>
+
+<!-- Template PDF com plano de fundo -->
+<div id="pdf-template">
+  <div class="content-wrapper" style="margin-top: 100px;">
+    <p>
+      <strong>Ao Condomínio <span id="pdf-condominio"></span></strong>
+    </p>
+    <p style="text-align: left;">Prezado(a),</p>
+    <p style="text-align: justify;">
+      Com satisfação apresentamos a proposta do nosso plano de cobertura terceirizada, serviço que foi
+      criado pelo Grupo Solução & Cia para atender as necessidades dos nossos clientes que possuem seu
+      quadro de colaboradores contratados pela modalidade orgânica.
+    </p>
+    <p style="text-align: justify;">
+      O programa constitui no fornecimento de mão de obra especializada para a cobertura do período
+      solicitado pelo condomínio.
+    </p>
+    <p>Facilidades e Benefícios do plano coberturas terceirizada:</p>
+    <ul style="text-align: justify; padding-left: 20px;">
+      <li>Mão de obra especializada e sem vínculos empregatícios;</li>
+      <li>Tranquilidade com a exclusão da necessidade da contratação de novos colaboradores;</li>
+      <li>Segurança na operação da rotina do empreendimento, tendo em vista treinamento prévio;</li>
+      <li>Garantia de 100% na cobertura dos serviços contratados;</li>
+      <li>Possibilidade de substituição do colaborador sem custos para o condomínio;</li>
+      <li>Economia na aquisição de fardamentos.</li>
+    </ul>
+    <p style="text-align: justify;">
+      Com a programação estabelecida, teremos a cobertura de <strong><span id="pdf-quantidade"></span> <span id="pdf-cargo"></span></strong>
+      distribuída conforme quadro a seguir:
+    </p>
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+      <tr>
+        <th style="border: 1px solid #000; padding: 8px; text-align: center;">FUNÇÃO</th>
+        <th style="border: 1px solid #000; padding: 8px; text-align: center;">PERÍODO</th>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #000; padding: 8px;"><span id="pdf-funcao"></span></td>
+        <td style="border: 1px solid #000; padding: 8px;"><span id="pdf-periodo"></span></td>
+      </tr>
+    </table>
+    <p style="text-align: justify;">
+      O valor da prestação de serviço será de <strong><span id="pdf-valor"></span></strong>.
+    </p>
+    <p style="text-align: justify;">
+      O valor da cobertura contempla custos com salários, encargos, fardamentos e benefícios.
+    </p>
+    <p style="text-align: justify;">
+      De acordo com a proposta.
+    </p>
+    <p style="text-align: center; margin-bottom: 30px;">
+      Salvador-BA, <span id="pdf-data"></span>
+    </p>
+    <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+      <div>
+        <div style="border-bottom: 1px solid #000; width: 200px; margin-top: 20px;"></div>
+        <p>Grupo Solução & Cia</p>
+      </div>
+      <div>
+        <div style="border-bottom: 1px solid #000; width: 200px; margin-top: 20px;"></div>
+        <p>Condomínio <span id="pdf-condominio-final"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== SISTEMA DE LOGIN E PERMISSÕES =====
+// Carregar usuários do localStorage ou usar padrão
+let usuariosPermitidos = JSON.parse(localStorage.getItem('usuariosPermitidos'));
+if (!usuariosPermitidos) {
+  usuariosPermitidos = {
+    "luidilsantos@gscia.com.br": { 
+      senha: "admin123", 
+      nome: "Luídil Santos",
+      role: "admin",
+      permissoes: {
+        alterarDesconto: true,
+        alterarAprovCob: true,
+        alterarRealizado: true,
+        alterarFaturado: true
+      }
+    },
+    "rht03@gscia.com.br": { 
+      senha: "rht123", 
+      nome: "RH Terceiro",
+      role: "finance",
+      permissoes: {
+        alterarDesconto: false,
+        alterarAprovCob: false,
+        alterarRealizado: false,
+        alterarFaturado: true
+      }
+    },
+    "zildiannerocha@gscia.com.br": { 
+      senha: "rht123", 
+      nome: "Zildianne Rocha",
+      role: "finance",
+      permissoes: {
+        alterarDesconto: false,
+        alterarAprovCob: false,
+        alterarRealizado: false,
+        alterarFaturado: true
+      }
+    },
+    "rht50@gscia.com.br": { 
+      senha: "oper123", 
+      nome: "RH Cinquenta",
+      role: "operations",
+      permissoes: {
+        alterarDesconto: false,
+        alterarAprovCob: true,
+        alterarRealizado: true,
+        alterarFaturado: false
+      }
+    },
+    "atendimento@gscia.com.br": { 
+      senha: "oper123", 
+      nome: "Atendimento",
+      role: "operations",
+      permissoes: {
+        alterarDesconto: false,
+        alterarAprovCob: true,
+        alterarRealizado: true,
+        alterarFaturado: false
+      }
+    },
+    "coberturas@gscia.com.br": { 
+      senha: "oper123", 
+      nome: "Coberturas",
+      role: "operations",
+      permissoes: {
+        alterarDesconto: false,
+        alterarAprovCob: true,
+        alterarRealizado: true,
+        alterarFaturado: false
+      }
+    },
+    "rht55@gscia.com.br": { 
+      senha: "oper123", 
+      nome: "RH Cinquenta e Cinco",
+      role: "operations",
+      permissoes: {
+        alterarDesconto: false,
+        alterarAprovCob: true,
+        alterarRealizado: true,
+        alterarFaturado: false
+      }
+    }
+  };
+  localStorage.setItem('usuariosPermitidos', JSON.stringify(usuariosPermitidos));
+}
+
+// Verificar se o usuário já está logado ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+  // Verificar login de usuário regular
+  if (sessionStorage.getItem('loggedUser')) {
+    const userEmail = sessionStorage.getItem('loggedUser');
+    if (usuariosPermitidos[userEmail]) {
+      showMainSection(userEmail);
+      return;
+    } else {
+      sessionStorage.removeItem('loggedUser');
+    }
+  }
+  
+  // Verificar acesso como consultor
+  if (sessionStorage.getItem('consultantName')) {
+    const consultantName = sessionStorage.getItem('consultantName');
+    showMainSectionAsConsultant(consultantName);
+  }
+});
+
+// ===== FORMULÁRIOS DE ACESSO SEPARADOS =====
+
+// 1. Login Regular
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password = document.getElementById('loginPassword').value;
+  
+  // Verificar se é um usuário registrado
+  const usuario = usuariosPermitidos[email];
+  if (usuario && usuario.senha === password) {
+    sessionStorage.setItem('loggedUser', email);
+    showMainSection(email);
+  } else {
+    alert('E-mail não autorizado ou senha incorreta.');
+    document.getElementById('loginPassword').value = '';
+  }
+});
+
+// 2. Botão para mostrar formulário de consultor
+document.getElementById('consultantBtn').addEventListener('click', function() {
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('consultantForm').style.display = 'block';
+});
+
+// 3. Botão para voltar ao login regular
+document.getElementById('backToLoginBtn').addEventListener('click', function() {
+  document.getElementById('consultantForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+});
+
+// 4. Confirmação de acesso como consultor
+document.getElementById('confirmConsultantBtn').addEventListener('click', function() {
+  const consultantName = document.getElementById('consultantName').value.trim();
+  
+  if (!consultantName) {
+    alert('Por favor, informe seu nome');
+    return;
+  }
+  
+  sessionStorage.setItem('consultantName', consultantName);
+  showMainSectionAsConsultant(consultantName);
+});
+
+// Função para mostrar a seção principal como consultor
+function showMainSectionAsConsultant(name) {
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('mainSection').style.display = 'block';
+  
+  document.getElementById('userName').textContent = name;
+  document.getElementById('userName').innerHTML = `${name} <span class="permission-badge permission-consultant">Consultor</span>`;
+  
+  // Esconder botão de admin
+  document.getElementById('manageUsersBtn').style.display = 'none';
+  
+  // Preencher campo Solicitante automaticamente
+  document.getElementById('Solicitante').value = name;
+  
+  // Configurar datas mínimas
+  const hoje = new Date();
+  const dataMinima = new Date();
+  dataMinima.setDate(hoje.getDate() + 2);
+  
+  // Formatar para YYYY-MM-DD
+  const formatarDataInput = data => data.toISOString().split('T')[0];
+  
+  // Definir data mínima no input
+  document.getElementById('data_inicio').min = formatarDataInput(dataMinima);
+}
+
+// Função para mostrar a seção principal como usuário regular
+function showMainSection(email) {
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('mainSection').style.display = 'block';
+  
+  const userInfo = usuariosPermitidos[email];
+  document.getElementById('userName').textContent = userInfo.nome;
+  
+  // Preencher campo Solicitante automaticamente
+  document.getElementById('Solicitante').value = userInfo.nome;
+  
+  // Mostrar botão de admin se for administrador
+  if (userInfo.role === "admin") {
+    document.getElementById('manageUsersBtn').style.display = 'block';
+  }
+  
+  // Adicionar badge de permissão
+  let roleText = "";
+  let roleClass = "";
+  
+  switch(userInfo.role) {
+    case "admin":
+      roleText = "Administrador";
+      roleClass = "permission-admin";
+      break;
+    case "finance":
+      roleText = "Financeiro";
+      roleClass = "permission-finance";
+      break;
+    case "operations":
+      roleText = "Operações";
+      roleClass = "permission-operations";
+      break;
+    default:
+      roleText = "Consultor";
+      roleClass = "permission-consultant";
+  }
+  
+  document.getElementById('userName').innerHTML = `${userInfo.nome} <span class="permission-badge ${roleClass}">${roleText}</span>`;
+  
+  // Configurar datas mínimas
+  const hoje = new Date();
+  const dataMinima = new Date();
+  dataMinima.setDate(hoje.getDate() + 2);
+  
+  // Formatar para YYYY-MM-DD
+  const formatarDataInput = data => data.toISOString().split('T')[0];
+  
+  // Definir data mínima no input
+  document.getElementById('data_inicio').min = formatarDataInput(dataMinima);
+}
+
+// Evento de logout
+document.getElementById('logoutBtn').addEventListener('click', function() {
+  sessionStorage.removeItem('loggedUser');
+  sessionStorage.removeItem('consultantName');
+  document.getElementById('mainSection').style.display = 'none';
+  document.getElementById('loginSection').style.display = 'block';
+  document.getElementById('consultantForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('consultantName').value = '';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+});
+
+// ===== GERENCIAMENTO DE USUÁRIOS (ADMIN) =====
+document.getElementById('manageUsersBtn').addEventListener('click', function() {
+  document.getElementById('usersModal').style.display = 'flex';
+  loadUsersForEditing();
+});
+
+document.querySelector('.close-modal').addEventListener('click', function() {
+  document.getElementById('usersModal').style.display = 'none';
+});
+
+function loadUsersForEditing() {
+  const userList = document.getElementById('userList');
+  userList.innerHTML = '';
+  
+  for (const email in usuariosPermitidos) {
+    const user = usuariosPermitidos[email];
+    const userItem = document.createElement('div');
+    userItem.className = 'user-item';
+    
+    userItem.innerHTML = `
+      <div class="user-email">${email}</div>
+      <div class="user-role">
+        <select class="role-select" data-email="${email}">
+          <option value="admin" ${user.role === "admin" ? "selected" : ""}>Administrador</option>
+          <option value="finance" ${user.role === "finance" ? "selected" : ""}>Financeiro</option>
+          <option value="operations" ${user.role === "operations" ? "selected" : ""}>Operações</option>
+        </select>
+      </div>
+      <div class="user-actions">
+        <input type="password" class="user-password" value="${user.senha}" placeholder="Nova senha">
+        <button class="btn-primary save-password" data-email="${email}">Atualizar</button>
+      </div>
+    `;
+    
+    userList.appendChild(userItem);
+  }
+  
+  // Adicionar eventos aos botões de salvar
+  document.querySelectorAll('.save-password').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const email = this.getAttribute('data-email');
+      const newPassword = this.previousElementSibling.value;
+      const roleSelect = this.parentElement.previousElementSibling.querySelector('.role-select');
+      const newRole = roleSelect.value;
+      
+      if (newPassword) {
+        usuariosPermitidos[email].senha = newPassword;
+        usuariosPermitidos[email].role = newRole;
+        
+        // Atualizar permissões baseado no novo papel
+        usuariosPermitidos[email].permissoes = getPermissionsForRole(newRole);
+        
+        // Salvar no localStorage
+        localStorage.setItem('usuariosPermitidos', JSON.stringify(usuariosPermitidos));
+        alert(`Usuário ${email} atualizado com sucesso!`);
+      } else {
+        alert('Por favor, insira uma senha.');
+      }
+    });
+  });
+}
+
+function getPermissionsForRole(role) {
+  switch(role) {
+    case "admin":
+      return {
+        alterarDesconto: true,
+        alterarAprovCob: true,
+        alterarRealizado: true,
+        alterarFaturado: true
+      };
+    case "finance":
+      return {
+        alterarDesconto: false,
+        alterarAprovCob: false,
+        alterarRealizado: false,
+        alterarFaturado: true
+      };
+    case "operations":
+      return {
+        alterarDesconto: false,
+        alterarAprovCob: true,
+        alterarRealizado: true,
+        alterarFaturado: false
+      };
+    default:
+      return {
+        alterarDesconto: false,
+        alterarAprovCob: false,
+        alterarRealizado: false,
+        alterarFaturado: false
+      };
+  }
+}
+
+// ===== VISUALIZAÇÃO DE SENHA =====
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById('loginPassword');
+  const toggleIcon = document.querySelector('.toggle-password i');
+  
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    toggleIcon.classList.remove('fa-eye');
+    toggleIcon.classList.add('fa-eye-slash');
+  } else {
+    passwordInput.type = "password";
+    toggleIcon.classList.remove('fa-eye-slash');
+    toggleIcon.classList.add('fa-eye');
+  }
+}
+
+// ===== SISTEMA DE AJUDA PARA NOVOS CARGOS =====
+document.getElementById('ajudaCargo').addEventListener('click', function(e) {
+  e.preventDefault();
+  const container = document.getElementById('novoCargoContainer');
+  container.style.display = container.style.display === 'none' ? 'block' : 'none';
+});
+
+document.getElementById('enviarSolicitacaoCargo').addEventListener('click', function() {
+  const novoCargo = document.getElementById('novoCargo').value.trim();
+  
+  if (!novoCargo) {
+    alert("Por favor, digite o nome do cargo");
+    return;
+  }
+  
+  // Simular envio de e-mail
+  const destinatarios = ["luidilsantos@gscia.com.br", "rht03@gscia.com.br"];
+  const assunto = "Solicitação de Novo Cargo";
+  const corpo = `Por favor, cadastrar novo cargo: ${novoCargo}`;
+  
+  console.log(`Enviando e-mail para: ${destinatarios.join(', ')}`);
+  console.log(`Assunto: ${assunto}`);
+  console.log(`Corpo: ${corpo}`);
+  
+  alert("Solicitação enviada! Entraremos em contato quando o cargo estiver disponível");
+  
+  // Resetar campo
+  document.getElementById('novoCargo').value = '';
+  document.getElementById('novoCargoContainer').style.display = 'none';
+});
+
+// ===== NOTIFICAÇÃO DE NOVAS PROPOSTAS =====
+function notificarNovaProposta(proposta) {
+  const destinatarios = ["luidilsantos@gscia.com.br", "rht03@gscia.com.br"];
+  const assunto = "Nova Proposta de Cobertura Cadastrada";
+  
+  const corpo = `
+    Nova proposta cadastrada:
+    Condomínio: ${proposta.condominio}
+    Período: ${proposta.periodo}
+    Cargo: ${proposta.cargo}
+    Valor: ${proposta.valor}
+    Solicitante: ${proposta.solicitante}
+  `;
+  
+  // Simulação de envio de e-mail
+  console.log(`Enviando e-mail para: ${destinatarios.join(', ')}`);
+  console.log(`Assunto: ${assunto}`);
+  console.log(`Corpo:\n${corpo}`);
+  
+  // Exibir alerta para o usuário
+  alert("Notificação enviada para a equipe de RH!");
+}
+
+// Storage versioning to handle data migration
+const STORAGE_VERSION = 'cobertura_storage_v9'; // Versão atualizada
+const currentStorageVersion = localStorage.getItem('storageVersion');
+if (currentStorageVersion !== STORAGE_VERSION) {
+  localStorage.removeItem('requests');
+  localStorage.removeItem('finalizedRequests');
+  localStorage.removeItem('canceledRequests');
+  localStorage.setItem('storageVersion', STORAGE_VERSION);
+}
+
+// Tabela de valores diários conforme especificado
+const tabelaDiaria = {
+  "Administrador": {
+    "Terceirizado": 450.00,
+    "Orgânico": 480.00,
+    "Linha Verde": 480.00
+  },
+  "Porteiro Diurno": {
+    "Terceirizado": 250.00,
+    "Orgânico": 370.00,
+    "Linha Verde": 270.00
+  },
+  "Porteiro Noturno": {
+    "Terceirizado": 250.00,
+    "Orgânico": 370.00,
+    "Linha Verde": 270.00
+  },
+  "Vigia Diurno": {
+    "Terceirizado": 250.00,
+    "Orgânico": 370.00,
+    "Linha Verde": 270.00
+  },
+  "Vigia Noturno": {
+    "Terceirizado": 250.00,
+    "Orgânico": 370.00,
+    "Linha Verde": 270.00
+  },
+  "Encarregado De Manutenção": {
+    "Terceirizado": 300.00,
+    "Orgânico": 350.00,
+    "Linha Verde": 350.00
+  },
+  "Supervisor Operacional Diurno": {
+    "Terceirizado": 400.00,
+    "Orgânico": 430.00,
+    "Linha Verde": 430.00
+  },
+  "Supervisor Operacional Noturno": {
+    "Terceirizado": 400.00,
+    "Orgânico": 430.00,
+    "Linha Verde": 430.00
+  },
+  "Cabo de Turma": {
+    "Terceirizado": 250.00,
+    "Orgânico": 370.00,
+    "Linha Verde": 270.00
+  },
+  "Agente de Patrimônio Diurno": {
+    "Terceirizado": 250.00,
+    "Orgânico": 370.00,
+    "Linha Verde": 270.00
+  },
+  "Agente de Patrimônio Noturno": {
+    "Terceirizado": 250.00,
+    "Orgânico": 370.00,
+    "Linha Verde": 270.00
+  },
+  "Recepcionista Diurno": {
+    "Terceirizado": 300.00,
+    "Orgânico": 350.00,
+    "Linha Verde": 350.00
+  },
+  "Recepcionista Noturno": {
+    "Terceirizado": 300.00,
+    "Orgânico": 350.00,
+    "Linha Verde": 350.00
+  },
+  "Zelador": {
+    "Terceirizado": 300.00,
+    "Orgânico": 350.00,
+    "Linha Verde": 350.00
+  },
+  "Auxiliar de Serviços Gerais": {
+    "Terceirizado": 200.00,
+    "Orgânico": 250.00,
+    "Linha Verde": 220.00
+  },
+  "Assistente Administrativo": {
+    "Terceirizado": 380.00,
+    "Orgânico": 400.00,
+    "Linha Verde": 400.00
+  }
+};
+
+// Mapeamento de salários e horas conforme planilha
+const salarios = {
+  "Administrador": 3165,
+  "Porteiro Diurno": 1718,
+  "Porteiro Noturno": 1718,
+  "Vigia Diurno": 1718,
+  "Vigia Noturno": 1718,
+  "Encarregado De Manutenção": 2200,
+  "Supervisor Operacional Diurno": 2754,
+  "Supervisor Operacional Noturno": 2754,
+  "Cabo de Turma": 1900,
+  "Agente de Patrimônio Diurno": 1718,
+  "Agente de Patrimônio Noturno": 1718,
+  "Recepcionista Diurno": 1718,
+  "Recepcionista Noturno": 1718,
+  "Zelador": 1718,
+  "Auxiliar de Serviços Gerais": 1552,
+  "Assistente Administrativo": 1718
+};
+
+const horasMensais = {
+  "Administrador": 52,
+  "Porteiro Diurno": 32,
+  "Porteiro Noturno": 32,
+  "Vigia Diurno": 32,
+  "Vigia Noturno": 32,
+  "Encarregado De Manutenção": 52,
+  "Supervisor Operacional Diurno": 52,
+  "Supervisor Operacional Noturno": 52,
+  "Cabo de Turma": 52,
+  "Agente de Patrimônio Diurno": 32,
+  "Agente de Patrimônio Noturno": 32,
+  "Recepcionista Diurno": 52,
+  "Recepcionista Noturno": 52,
+  "Zelador": 52,
+  "Auxiliar de Serviços Gerais": 52,
+  "Assistente Administrativo": 52
+};
+
+// Valores fixos da planilha
+const valoresFixos = {
+  valeTransporte: 5.6,
+  valeAlimentacao: 329,
+  fardamento: 55,
+  planoAssistencia: 31.9,
+  encargosSociais: 0.7522,
+  taxaAdministracao: 0.02,
+  tributos: 0.1633
+};
+
+// Função para calcular o valor conforme planilha
+function calcularValor(cargo, quantidadeDias, tipoFaturamento) {
+  // Para 10 dias ou menos - usar tabela diária
+  if (quantidadeDias <= 10) {
+    const valorDiario = tabelaDiaria[cargo][tipoFaturamento];
+    return {
+      valorFinal: valorDiario * quantidadeDias,
+      valorDiario: valorDiario
+    };
+  }
+  
+  // Para mais de 10 dias - cálculo completo
+  // 1. Salário base
+  const salarioBase = salarios[cargo] || 0;
+  
+  // 2. Verificar se é cargo noturno
+  const cargosNoturnos = [
+    "Porteiro Noturno",
+    "Vigia Noturno",
+    "Supervisor Operacional Noturno",
+    "Agente de Patrimônio Noturno",
+    "Recepcionista Noturno"
+  ];
+  
+  let adicionalNoturno = 0;
+  if (cargosNoturnos.includes(cargo)) {
+    adicionalNoturno = (salarioBase / 220) * 0.25 * 8 * 15.5;
+  }
+  
+  // 3. D.S.R. (Descanso Semanal Remunerado)
+  const dsr = adicionalNoturno > 0 ? (adicionalNoturno / 25) * 5 : 0;
+  
+  // 4. Total de salários + adicionais
+  const totalSalariosAdicionais = salarioBase + adicionalNoturno + dsr;
+  
+  // 5. Encargos sociais
+  const encargos = totalSalariosAdicionais * valoresFixos.encargosSociais;
+  
+  // 6. Benefícios
+  const horas = horasMensais[cargo] || 0;
+  const valeTransporte = horas * valoresFixos.valeTransporte;
+  const valeAlimentacao = valoresFixos.valeAlimentacao;
+  const fardamento = valoresFixos.fardamento;
+  const planoAssistencia = valoresFixos.planoAssistencia;
+  
+  // 7. Total da prestação de serviços
+  const totalServicos = salarioBase + encargos + valeTransporte +
+    valeAlimentacao + fardamento + planoAssistencia;
+  
+  // 8. Cálculo do valor diário (considerando tributos e taxa de administração)
+  const baseCalculo = 1 - valoresFixos.tributos - valoresFixos.taxaAdministracao;
+  const valorDiario = totalServicos / baseCalculo / 30;
+  
+  // 9. Cálculo do valor final
+  const valorFinal = valorDiario * quantidadeDias;
+  
+  return {
+    valorFinal: valorFinal,
+    valorDiario: valorDiario
+  };
+}
+
+// Função para formatar valor em moeda brasileira
+function formatarMoeda(valor) {
+  return valor.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+// Função para formatar inputs monetários
+function formatarMoedaInput(input) {
+  let valor = input.value.replace(/\D/g, '');
+  valor = (parseFloat(valor) / 100).toFixed(2);
+  if (!isNaN(valor)) {
+    input.value = 'R$ ' + valor.replace('.', ',')
+      .replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
+  } else {
+    input.value = 'R$ 0,00';
+  }
+}
+
+// Função para converter número por extenso
+function numeroPorExtenso(valor) {
+  const unidades = ["", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove"];
+  const de10a19 = ["dez", "onze", "doze", "treze", "quatorze", "quinze", "dezesseis", "dezessete", "dezoito", "dezenove"];
+  const dezenas = ["", "dez", "vinte", "trinta", "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa"];
+  const centenas = ["", "cento", "duzentos", "trezentos", "quatrocentos", "quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos"];
+  
+  let valorNumerico = Math.floor(valor);
+  let centavos = Math.round((valor - valorNumerico) * 100);
+  
+  if (valorNumerico === 0) {
+    return "zero reais";
+  }
+  
+  let extenso = "";
+  
+  // Milhares
+  if (valorNumerico >= 1000) {
+    const milhares = Math.floor(valorNumerico / 1000);
+    valorNumerico %= 1000;
+    
+    if (milhares === 1) {
+      extenso += "mil ";
+    } else {
+      extenso += numeroPorExtenso(milhares).replace(" reais", "") + " mil ";
+    }
+  }
+  
+  // Centenas
+  if (valorNumerico >= 100) {
+    const centena = Math.floor(valorNumerico / 100);
+    valorNumerico %= 100;
+    
+    if (centena === 1 && valorNumerico === 0) {
+      extenso += "cem ";
+    } else {
+      extenso += centenas[centena] + " ";
+    }
+  }
+  
+  // Dezenas e unidades
+  if (valorNumerico >= 10 && valorNumerico <= 19) {
+    extenso += de10a19[valorNumerico - 10] + " ";
+    valorNumerico = 0;
+  } else if (valorNumerico >= 20) {
+    const dezena = Math.floor(valorNumerico / 10);
+    valorNumerico %= 10;
+    extenso += dezenas[dezena] + " ";
+  }
+  
+  // Unidades
+  if (valorNumerico > 0) {
+    extenso += unidades[valorNumerico] + " ";
+  }
+  
+  // Plural
+  if (extenso.trim() === "um") {
+    extenso += "real ";
+  } else {
+    extenso += "reais ";
+  }
+  
+  // Centavos
+  if (centavos > 0) {
+    extenso += "e ";
+    
+    if (centavos < 10) {
+      extenso += unidades[centavos] + " ";
+    } else if (centavos >= 10 && centavos <= 19) {
+      extenso += de10a19[centavos - 10] + " ";
+    } else {
+      const dezenaCent = Math.floor(centavos / 10);
+      const unidadeCent = centavos % 10;
+      extenso += dezenas[dezenaCent];
+      if (unidadeCent > 0) {
+        extenso += " e " + unidades[unidadeCent] + " ";
+      }
+    }
+    
+    if (centavos === 1) {
+      extenso += "centavos";
+    } else {
+      extenso += "centavos";
+    }
+  }
+  
+  return extenso.trim();
+}
+
+// Função para formatar data no padrão dd/mm/aaaa
+function formatarData(data) {
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+}
+
+// Função para atualizar o status
+function atualizarStatus(request) {
+  if (request.status === 'Cancelado - Sem Posto') {
+    return 'Cancelado - Sem Posto';
+  } else if (request.faturado === 'Sim') {
+    return 'Finalizado';
+  } else if (request.realizado === 'Sim') {
+    return 'Aguardando Faturar';
+  } else if (request.pdfAssinado) {
+    return 'Assinado';
+  } else {
+    return 'Em Aberto';
+  }
+}
+
+// Armazenar solicitações
+let requests = JSON.parse(localStorage.getItem('requests')) || [];
+let finalizedRequests = JSON.parse(localStorage.getItem('finalizedRequests')) || [];
+let canceledRequests = JSON.parse(localStorage.getItem('canceledRequests')) || [];
+let currentRequestId = null;
+
+// Evento para o botão Calcular
+document.getElementById('calcularBtn').addEventListener('click', function() {
+  // Forçar o cálculo dos dias primeiro
+  calcularDiferencaDias();
+  
+  // Obter valores do formulário
+  const condominio = document.getElementById('condominio').value.trim();
+  const inicioInput = document.getElementById('data_inicio').value;
+  const fimInput = document.getElementById('data_fim').value;
+  
+  // Validar datas
+  if (!inicioInput || !fimInput) {
+    alert('Por favor, informe o período completo');
+    return;
+  }
+  
+  const inicioData = new Date(inicioInput);
+  const fimData = new Date(fimInput);
+  const periodo = `${inicioData.toLocaleDateString('pt-BR')} até ${fimData.toLocaleDateString('pt-BR')}`;
+  
+  const tipoFaturamento = document.getElementById('tipo_faturamento').value;
+  const quantidadeDias = parseInt(document.getElementById('quantidade_dias').value);
+  const cargo = document.getElementById('cargo').value;
+
+  // Validar entrada
+  if (!condominio) {
+    alert('Por favor, informe o nome do condomínio');
+    document.getElementById('condominio').focus();
+    return;
+  }
+
+  if (!tipoFaturamento) {
+    alert('Por favor, selecione o tipo de faturamento');
+    document.getElementById('tipo_faturamento').focus();
+    return;
+  }
+
+  if (!quantidadeDias || quantidadeDias <= 0) {
+    alert('Por favor, informe uma quantidade de dias válida');
+    document.getElementById('quantidade_dias').focus();
+    return;
+  }
+
+  if (!cargo) {
+    alert('Por favor, selecione um cargo');
+    document.getElementById('cargo').focus();
+    return;
+  }
+
+  // Calcular valores
+  const { valorFinal, valorDiario } = calcularValor(cargo, quantidadeDias, tipoFaturamento);
+
+  // Exibir resultados
+  document.getElementById('resCondominio').textContent = condominio;
+  document.getElementById('resPeriodo').textContent = periodo;
+  document.getElementById('resTipoFaturamento').textContent = tipoFaturamento;
+  document.getElementById('resCargo').textContent = cargo;
+  document.getElementById('resDias').textContent = quantidadeDias;
+  document.getElementById('resValorDiaria').textContent = formatarMoeda(valorDiario);
+  document.getElementById('resValor').textContent = formatarMoeda(valorFinal);
+
+  // Mostrar container de resultados com animação
+  const resultContainer = document.getElementById('resultContainer');
+  resultContainer.style.display = 'block';
+  resultContainer.style.animation = 'fadeIn 0.8s ease';
+
+  // Scroll para o resultado
+  resultContainer.scrollIntoView({ behavior: 'smooth' });
+});
+
+// Função unificada para salvar e gerar PDF
+document.getElementById('gerarSalvarBtn').addEventListener('click', async function() {
+  // Obter dados do resultado
+  const condominio = document.getElementById('resCondominio').textContent;
+  const periodo = document.getElementById('resPeriodo').textContent;
+  const tipoFaturamento = document.getElementById('resTipoFaturamento').textContent;
+  const cargo = document.getElementById('resCargo').textContent;
+  const solicitante = document.getElementById('Solicitante').value.trim();
+  const dias = document.getElementById('resDias').textContent;
+  const valor = document.getElementById('resValor').textContent;
+  const valorDiaria = document.getElementById('resValorDiaria').textContent;
+  const colaboradores = document.getElementById('Quantidade De Colaboradores').value.trim();
+  const observacoes = document.getElementById('Observações').value.trim();
+  const emailRetorno = document.getElementById('E-mail').value.trim();
+  const inicioData = new Date(document.getElementById('data_inicio').value);
+  const fimData = new Date(document.getElementById('data_fim').value);
+
+  // Obter valor numérico para extenso
+  const { valorFinal: valorNumerico } = calcularValor(
+    cargo,
+    parseInt(dias),
+    tipoFaturamento
+  );
+  
+  const valorAtualizado = valorNumerico;
+
+  // Preencher o template
+  document.getElementById('pdf-condominio').textContent = condominio;
+  document.getElementById('pdf-condominio-final').textContent = condominio;
+  document.getElementById('pdf-data').textContent = formatarData(new Date());
+  document.getElementById('pdf-quantidade').textContent = '01';
+  document.getElementById('pdf-cargo').textContent = cargo;
+  document.getElementById('pdf-funcao').textContent = `01 -- ${cargo}`;
+  document.getElementById('pdf-periodo').textContent = `${dias} Dias -- ${periodo}`;
+  document.getElementById('pdf-valor').textContent = `${formatarMoeda(valorAtualizado)} (${numeroPorExtenso(valorAtualizado)})`;
+
+  // Criar PDF
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+
+  // Capturar o template
+  const pdfTemplate = document.getElementById('pdf-template');
+
+  // Usar html2canvas para converter o template em imagem
+  await html2canvas(pdfTemplate, {
+    scale: 2,
+    useCORS: true,
+    logging: false
+  }).then(canvas => {
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const imgWidth = 210; // Largura do A4 em mm
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+
+    // Adicionar imagem ao PDF
+    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+
+    // Gerar blob do PDF
+    const pdfBlob = pdf.output('blob');
+
+    // Trigger download
+    const downloadUrl = URL.createObjectURL(pdfBlob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = `proposta_cobertura_${condominio.replace(/\s/g, '_')}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Revoke the download URL after a short delay
+    setTimeout(() => {
+      URL.revokeObjectURL(downloadUrl);
+    }, 100);
+
+    // Convert to base64 for storage
+    const reader = new FileReader();
+    reader.onload = function() {
+      const base64data = reader.result;
+      
+      // Criar nova solicitação
+      const newRequest = {
+        id: Date.now(),
+        condominio: condominio,
+        dataSolicitacao: new Date().toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }),
+        dataHoraSolicitacao: new Date().toISOString(),
+        tipoFaturamento: tipoFaturamento,
+        cargo: cargo,
+        colaboradores: colaboradores,
+        dias: dias,
+        valor: formatarMoeda(valorNumerico),
+        valorNumerico: valorNumerico,
+        desconto: 0,
+        valorAtualizado: valorNumerico,
+        solicitante: solicitante,
+        emailRetorno: emailRetorno,
+        observacoes: observacoes,
+        periodo: periodo,
+        status: "Em Aberto",
+        aprovacaoCondominio: "",
+        aprovacaoCobertura: "",
+        realizado: "",
+        faturado: "",
+        pdfOriginal: base64data,
+        pdfAssinado: null,
+        emailEnviado: false
+      };
+
+      // Adicionar ao array
+      requests.push(newRequest);
+
+      // Salvar no localStorage
+      localStorage.setItem('requests', JSON.stringify(requests));
+      
+      // Notificar sobre a nova proposta
+      notificarNovaProposta({
+        condominio: condominio,
+        periodo: periodo,
+        cargo: cargo,
+        valor: formatarMoeda(valorNumerico),
+        solicitante: solicitante
+      });
+
+      alert('Solicitação salva e PDF gerado com sucesso!');
+
+      // Atualizar tabela de solicitações
+      updateRequestsTable();
+      
+      // Navegar para o Quadro de Solicitações
+      showRequestsSection();
+    };
+    reader.readAsDataURL(pdfBlob);
+  });
+});
+
+// Função para atualizar a tabela de solicitações
+function updateRequestsTable() {
+  const tbody = document.getElementById('requestsTableBody');
+  tbody.innerHTML = '';
+
+  // Filtrar apenas solicitações ativas (não finalizadas ou canceladas)
+  let activeRequests = requests.filter(request => 
+    request.status !== 'Finalizado' && 
+    request.status !== 'Cancelado - Sem Posto'
+  );
+
+  // Obter permissões do usuário logado
+  const userEmail = sessionStorage.getItem('loggedUser');
+  const consultantName = sessionStorage.getItem('consultantName');
+  
+  let permissions = {};
+  
+  if (userEmail) {
+    permissions = usuariosPermitidos[userEmail]?.permissoes || {};
+  } else if (consultantName) {
+    // Permissões para consultor
+    permissions = {
+      alterarDesconto: false,
+      alterarAprovCob: false,
+      alterarRealizado: false,
+      alterarFaturado: false
+    };
+    
+  }
+
+  activeRequests.forEach(request => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${request.condominio}</td>
+      <td>${request.dataSolicitacao}</td>
+      <td>${request.tipoFaturamento}</td>
+      <td>${request.cargo}</td>
+      <td>${request.colaboradores}</td>
+      <td>${request.dias}</td>
+      <td>${request.valor}</td>
+      <td>
+        <input type="text" class="desconto-input" data-id="${request.id}" value="${formatarMoeda(request.desconto)}" oninput="formatarMoedaInput(this)" ${permissions.alterarDesconto ? '' : 'disabled'}>
+      </td>
+      <td class="valor-atualizado" data-id="${request.id}">${formatarMoeda(request.valorAtualizado)}</td>
+      <td>${request.solicitante}</td>
+      <td>${request.emailRetorno}</td>
+      <td>${request.observacoes}</td>
+      <td>${request.periodo}</td>
+      <td><span class="status ${request.status === 'Assinado' ? 'status-signed' : request.status === 'Aguardando Faturar' ? 'status-pending' : 'status-pending'}">${request.status}</span></td>
+      <td>${request.aprovacaoCondominio}</td>
+      <td>
+        <select class="aprov-cob-select" data-id="${request.id}" ${permissions.alterarAprovCob ? '' : 'disabled'}>
+          <option value="">--</option>
+          <option value="Sim" ${request.aprovacaoCobertura === 'Sim' ? 'selected' : ''}>Sim</option>
+          <option value="Não" ${request.aprovacaoCobertura === 'Não' ? 'selected' : ''}>Não</option>
+        </select>
+      </td>
+      <td>
+        <select class="realizado-select" data-id="${request.id}" ${permissions.alterarRealizado ? '' : 'disabled'}>
+          <option value="">--</option>
+          <option value="Sim" ${request.realizado === 'Sim' ? 'selected' : ''}>Sim</option>
+          <option value="Não" ${request.realizado === 'Não' ? 'selected' : ''}>Não</option>
+        </select>
+      </td>
+      <td>
+        <select class="faturado-select" data-id="${request.id}" ${permissions.alterarFaturado ? '' : 'disabled'}>
+          <option value="">--</option>
+          <option value="Sim" ${request.faturado === 'Sim' ? 'selected' : ''}>Sim</option>
+          <option value="Não" ${request.faturado === 'Não' ? 'selected' : ''}>Não</option>
+        </select>
+      </td>
+      <td>
+        ${request.pdfOriginal ?
+          `<button class="action-btn btn-primary view-btn" data-id="${request.id}" data-type="original">
+            <i class="fas fa-eye"></i> Ver
+          </button>` : 'N/A'}
+      </td>
+      <td>
+        ${request.pdfAssinado ?
+          `<button class="action-btn btn-success view-btn" data-id="${request.id}" data-type="assinado">
+            <i class="fas fa-eye"></i> Ver
+          </button>` : 'N/A'}
+      </td>
+      <td>
+        <button class="action-btn btn-success upload-btn" data-id="${request.id}">
+          <i class="fas fa-upload"></i> Assinado
+        </button>
+        <button class="action-btn btn-danger delete-btn" data-id="${request.id}">
+          <i class="fas fa-trash"></i> Excluir
+        </button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  configurarEventosSelects();
+  configurarEventosBotoes();
+  configurarEventosDesconto();
+}
+
+// Função para atualizar a tabela de finalizados
+function updateFinalizedTable() {
+  const tbody = document.getElementById('finalizedTableBody');
+  tbody.innerHTML = '';
+  
+  let finalRequests = finalizedRequests;
+  const consultantName = sessionStorage.getItem('consultantName');
+  
+  // Se for consultor, filtrar apenas suas solicitações
+  if (consultantName) {
+    finalRequests = finalRequests.filter(request => request.solicitante === consultantName);
+  }
+
+  finalRequests.forEach(request => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${request.condominio}</td>
+      <td>${request.dataSolicitacao}</td>
+      <td>${request.tipoFaturamento}</td>
+      <td>${request.cargo}</td>
+      <td>${request.colaboradores}</td>
+      <td>${request.dias}</td>
+      <td>${request.valor}</td>
+      <td>${formatarMoeda(request.desconto)}</td>
+      <td>${formatarMoeda(request.valorAtualizado)}</td>
+      <td>${request.solicitante}</td>
+      <td>${request.emailRetorno}</td>
+      <td>${request.observacoes}</td>
+      <td>${request.periodo}</td>
+      <td><span class="status status-finalized">${request.status}</span></td>
+      <td>${request.aprovacaoCondominio}</td>
+      <td>${request.aprovacaoCobertura}</td>
+      <td>${request.realizado}</td>
+      <td>${request.faturado}</td>
+      <td>
+        ${request.pdfOriginal ?
+          `<button class="action-btn btn-primary view-btn" data-id="${request.id}" data-type="original">
+            <i class="fas fa-eye"></i> Ver
+          </button>` : 'N/A'}
+      </td>
+      <td>
+        ${request.pdfAssinado ?
+          `<button class="action-btn btn-success view-btn" data-id="${request.id}" data-type="assinado">
+            <i class="fas fa-eye"></i> Ver
+          </button>` : 'N/A'}
+      </td>
+      <td>${request.finalizedDate || ''}</td>
+      <td>
+        <button class="action-btn btn-warning btn-reopen reopen-finalized-btn" data-id="${request.id}">
+          <i class="fas fa-redo"></i> Reabrir
+        </button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  // Configurar eventos para os botões de visualização e reabertura
+  configurarEventosBotoes();
+}
+
+// Função para atualizar a tabela de cancelados
+function updateCanceledTable() {
+  const tbody = document.getElementById('canceledTableBody');
+  tbody.innerHTML = '';
+  
+  let cancelRequests = canceledRequests;
+  const consultantName = sessionStorage.getItem('consultantName');
+  
+  // Se for consultor, filtrar apenas suas solicitações
+  if (consultantName) {
+    cancelRequests = cancelRequests.filter(request => request.solicitante === consultantName);
+  }
+
+  cancelRequests.forEach(request => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${request.condominio}</td>
+      <td>${request.dataSolicitacao}</td>
+      <td>${request.tipoFaturamento}</td>
+      <td>${request.cargo}</td>
+      <td>${request.colaboradores}</td>
+      <td>${request.dias}</td>
+      <td>${request.valor}</td>
+      <td>${formatarMoeda(request.desconto)}</td>
+      <td>${formatarMoeda(request.valorAtualizado)}</td>
+      <td>${request.solicitante}</td>
+      <td>${request.emailRetorno}</td>
+      <td>${request.observacoes}</td>
+      <td>${request.periodo}</td>
+      <td><span class="status status-canceled">${request.status}</span></td>
+      <td>${request.aprovacaoCondominio}</td>
+      <td>${request.aprovacaoCobertura}</td>
+      <td>${request.realizado}</td>
+      <td>${request.faturado}</td>
+      <td>
+        ${request.pdfOriginal ?
+          `<button class="action-btn btn-primary view-btn" data-id="${request.id}" data-type="original">
+            <i class="fas fa-eye"></i> Ver
+          </button>` : 'N/A'}
+      </td>
+      <td>
+        ${request.pdfAssinado ?
+          `<button class="action-btn btn-success view-btn" data-id="${request.id}" data-type="assinado">
+            <i class="fas fa-eye"></i> Ver
+          </button>` : 'N/A'}
+      </td>
+      <td>${request.canceledDate || ''}</td>
+      <td>
+        <button class="action-btn btn-warning reopen-btn" data-id="${request.id}">
+          <i class="fas fa-redo"></i> Reabrir
+        </button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  configurarEventosBotoes();
+}
+
+function configurarEventosDesconto() {
+  document.querySelectorAll('.desconto-input').forEach(input => {
+    input.addEventListener('change', function() {
+      const requestId = parseInt(this.getAttribute('data-id'));
+      const request = requests.find(r => r.id === requestId);
+      if (!request) return;
+      
+      // Obter valor numérico do desconto
+      const valorString = this.value.replace(/\D/g, '');
+      const desconto = parseFloat(valorString) / 100;
+      
+      // Atualizar o desconto no request
+      request.desconto = desconto;
+      request.valorAtualizado = request.valorNumerico - desconto;
+      
+      // Atualizar a célula de valor atualizado
+      const valorAtualizadoCell = document.querySelector(`.valor-atualizado[data-id="${requestId}"]`);
+      if (valorAtualizadoCell) {
+        valorAtualizadoCell.textContent = formatarMoeda(request.valorAtualizado);
+      }
+      
+      // Salvar no localStorage
+      localStorage.setItem('requests', JSON.stringify(requests));
+    });
+  });
+}
+
+function configurarEventosBotoes() {
+  // Adicionar eventos aos botões
+  document.querySelectorAll('.upload-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      currentRequestId = parseInt(this.getAttribute('data-id'));
+      document.getElementById('uploadSection').style.display = 'block';
+      document.getElementById('fileName').textContent = '';
+      document.getElementById('confirmUploadBtn').disabled = true;
+    });
+  });
+
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const requestId = parseInt(this.getAttribute('data-id'));
+      const type = this.getAttribute('data-type');
+      
+      // Procurar em todas as solicitações (ativas, finalizadas e canceladas)
+      const allRequests = [...requests, ...finalizedRequests, ...canceledRequests];
+      const request = allRequests.find(r => r.id === requestId);
+      
+      if (request) {
+        let base64String = null;
+        if (type === 'original') {
+          base64String = request.pdfOriginal;
+        } else if (type === 'assinado') {
+          base64String = request.pdfAssinado;
+        }
+        
+        if (base64String) {
+          // Convert base64 to Blob
+          const base64Data = base64String.split(',')[1];
+          const byteCharacters = atob(base64Data);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: 'application/pdf' });
+          const blobUrl = URL.createObjectURL(blob);
+          
+          window.open(blobUrl, '_blank');
+          
+          // Revoke URL after 5 minutes
+          setTimeout(() => {
+            URL.revokeObjectURL(blobUrl);
+          }, 300000);
+        } else {
+          alert('PDF não disponível para esta solicitação.');
+        }
+      }
+    });
+  });
+
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const requestId = parseInt(this.getAttribute('data-id'));
+      if (confirm('Tem certeza que deseja excluir esta solicitação?')) {
+        requests = requests.filter(r => r.id !== requestId);
+        localStorage.setItem('requests', JSON.stringify(requests));
+        updateRequestsTable();
+      }
+    });
+  });
+
+  // Botão para reabrir solicitações canceladas
+  document.querySelectorAll('.reopen-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const requestId = parseInt(this.getAttribute('data-id'));
+      const request = canceledRequests.find(r => r.id === requestId);
+      
+      if (request) {
+        // Resetar status
+        request.status = 'Em Aberto';
+        request.canceledDate = null;
+        
+        // Mover para requests ativas
+        requests.push(request);
+        canceledRequests = canceledRequests.filter(r => r.id !== requestId);
+        
+        // Atualizar storages
+        localStorage.setItem('requests', JSON.stringify(requests));
+        localStorage.setItem('canceledRequests', JSON.stringify(canceledRequests));
+        
+        // Atualizar tabelas
+        updateRequestsTable();
+        updateCanceledTable();
+        
+        alert('Solicitação reaberta com sucesso!');
+      }
+    });
+  });
+  
+  // Botão para reabrir solicitações finalizadas
+  document.querySelectorAll('.reopen-finalized-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const requestId = parseInt(this.getAttribute('data-id'));
+      const request = finalizedRequests.find(r => r.id === requestId);
+      
+      if (request) {
+        // Resetar status e datas
+        request.status = 'Em Aberto';
+        request.finalizedDate = null;
+        request.faturado = '';
+        request.realizado = '';
+        
+        // Mover para solicitações ativas
+        requests.push(request);
+        finalizedRequests = finalizedRequests.filter(r => r.id !== requestId);
+        
+        // Atualizar armazenamento
+        localStorage.setItem('requests', JSON.stringify(requests));
+        localStorage.setItem('finalizedRequests', JSON.stringify(finalizedRequests));
+        
+        // Atualizar tabelas
+        updateRequestsTable();
+        updateFinalizedTable();
+        
+        alert('Solicitação reaberta com sucesso!');
+      }
+    });
+  });
+}
+
+function configurarEventosSelects() {
+  document.querySelectorAll('.aprov-cob-select').forEach(select => {
+    select.addEventListener('change', function() {
+      const requestId = parseInt(this.getAttribute('data-id'));
+      const request = requests.find(r => r.id === requestId);
+      if (!request) return;
+      
+      request.aprovacaoCobertura = this.value;
+      
+      // Se aprov. cob for "Não", então status deve ser "Cancelado - Sem Posto"
+      if (this.value === 'Não') {
+        if (confirm('Tem certeza que deseja cancelar esta solicitação? Isso a moverá para a lista de cancelados.')) {
+          request.status = 'Cancelado - Sem Posto';
+          request.canceledDate = formatarData(new Date());
+          
+          // Mover para cancelados
+          canceledRequests.push(request);
+          requests = requests.filter(r => r.id !== requestId);
+          
+          // Salvar em ambos os storages
+          localStorage.setItem('requests', JSON.stringify(requests));
+          localStorage.setItem('canceledRequests', JSON.stringify(canceledRequests));
+          
+          // Atualizar tabelas
+          updateRequestsTable();
+          updateCanceledTable();
+          
+          // Mostrar feedback visual
+          const feedback = document.createElement('div');
+          feedback.className = 'canceled-feedback';
+          feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Solicitação cancelada com sucesso!';
+          document.body.appendChild(feedback);
+          
+          // Remover feedback após 3 segundos
+          setTimeout(() => {
+            feedback.remove();
+          }, 3000);
+          
+          // Mostrar a aba de cancelados
+          showCanceledSection();
+        } else {
+          // Se o usuário cancelar a ação, voltar o select para o valor anterior
+          this.value = request.aprovacaoCobertura || '';
+        }
+      } else {
+        request.status = atualizarStatus(request);
+        localStorage.setItem('requests', JSON.stringify(requests));
+        updateRequestsTable();
+      }
+    });
+  });
+
+  document.querySelectorAll('.realizado-select').forEach(select => {
+    select.addEventListener('change', function() {
+      const requestId = parseInt(this.getAttribute('data-id'));
+      const request = requests.find(r => r.id === requestId);
+      if (!request) return;
+      
+      // Validação: Não pode ser realizado se aprov. cob for "Não"
+      if (request.aprovacaoCobertura === 'Não' && this.value === 'Sim') {
+        alert('Não é possível marcar como Realizado se a aprovação for Não');
+        this.value = 'Não';
+        return;
+      }
+      
+      request.realizado = this.value;
+      
+      // Se realizado for "Não" e aprovação for "Sim", cancelar
+      if (this.value === 'Não' && request.aprovacaoCobertura === 'Sim') {
+        if (confirm('Deseja realmente cancelar esta solicitação?')) {
+          request.status = 'Cancelado - Sem Posto';
+          request.canceledDate = formatarData(new Date());
+          
+          // Mover para cancelados
+          canceledRequests.push(request);
+          requests = requests.filter(r => r.id !== requestId);
+          
+          // Salvar em ambos os storages
+          localStorage.setItem('requests', JSON.stringify(requests));
+          localStorage.setItem('canceledRequests', JSON.stringify(canceledRequests));
+          
+          // Atualizar tabelas
+          updateRequestsTable();
+          updateCanceledTable();
+          
+          // Mostrar feedback visual
+          const feedback = document.createElement('div');
+          feedback.className = 'canceled-feedback';
+          feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Solicitação cancelada com sucesso!';
+          document.body.appendChild(feedback);
+          
+          // Remover feedback após 3 segundos
+          setTimeout(() => {
+            feedback.remove();
+          }, 3000);
+          
+          // Mostrar a aba de cancelados
+          showCanceledSection();
+        } else {
+          // Reverter para o valor anterior
+          this.value = request.realizado || '';
+        }
+      } else {
+        request.status = atualizarStatus(request);
+        localStorage.setItem('requests', JSON.stringify(requests));
+        updateRequestsTable();
+      }
+    });
+  });
+
+  document.querySelectorAll('.faturado-select').forEach(select => {
+    select.addEventListener('change', function() {
+      const requestId = parseInt(this.getAttribute('data-id'));
+      const request = requests.find(r => r.id === requestId);
+      if (!request) return;
+      
+      request.faturado = this.value;
+      request.status = atualizarStatus(request);
+      
+      // Se foi marcado como finalizado
+      if (request.status === 'Finalizado') {
+        // Adicionar data de finalização
+        request.finalizedDate = formatarData(new Date());
+        
+        // Mover para finalizados
+        finalizedRequests.push(request);
+        requests = requests.filter(r => r.id !== requestId);
+        
+        // Salvar em ambos os storages
+        localStorage.setItem('requests', JSON.stringify(requests));
+        localStorage.setItem('finalizedRequests', JSON.stringify(finalizedRequests));
+        
+        // Atualizar ambas as tabelas
+        updateRequestsTable();
+        updateFinalizedTable();
+      } else {
+        // Apenas salvar as alterações
+        localStorage.setItem('requests', JSON.stringify(requests));
+        updateRequestsTable();
+      }
+    });
+  });
+}
+
+// Função para verificar e enviar notificações
+function verificarNotificacoes() {
+  const agora = new Date();
+  const horas72 = 72 * 60 * 60 * 1000; // 72 horas em milissegundos
+  
+  requests.forEach(request => {
+    if (!request.pdfAssinado && !request.emailEnviado) {
+      const dataSolicitacao = new Date(request.dataHoraSolicitacao);
+      const diferenca = agora - dataSolicitacao;
+      
+      if (diferenca > horas72) {
+        // Simular envio de e-mail
+        console.log(`Enviando e-mail para ${request.emailRetorno} sobre a solicitação pendente de assinatura`);
+        alert(`E-mail enviado para ${request.emailRetorno} sobre a solicitação pendente de assinatura`);
+        request.emailEnviado = true;
+        localStorage.setItem('requests', JSON.stringify(requests));
+      }
+    }
+  });
+}
+
+// Função para mostrar a seção de solicitações
+function showRequestsSection() {
+  document.getElementById('calculatorSection').style.display = 'none';
+  document.getElementById('requestsSection').style.display = 'block';
+  document.getElementById('finalizedSection').style.display = 'none';
+  document.getElementById('canceledSection').style.display = 'none';
+  
+  document.getElementById('requestsTab').classList.add('active');
+  document.getElementById('calcTab').classList.remove('active');
+  document.getElementById('finalizedTab').classList.remove('active');
+  document.getElementById('canceledTab').classList.remove('active');
+  
+  updateRequestsTable();
+}
+
+// Função para mostrar a seção da calculadora
+function showCalculatorSection() {
+  document.getElementById('calculatorSection').style.display = 'block';
+  document.getElementById('requestsSection').style.display = 'none';
+  document.getElementById('finalizedSection').style.display = 'none';
+  document.getElementById('canceledSection').style.display = 'none';
+  
+  document.getElementById('calcTab').classList.add('active');
+  document.getElementById('requestsTab').classList.remove('active');
+  document.getElementById('finalizedTab').classList.remove('active');
+  document.getElementById('canceledTab').classList.remove('active');
+}
+
+// Função para mostrar a seção de finalizados
+function showFinalizedSection() {
+  document.getElementById('calculatorSection').style.display = 'none';
+  document.getElementById('requestsSection').style.display = 'none';
+  document.getElementById('finalizedSection').style.display = 'block';
+  document.getElementById('canceledSection').style.display = 'none';
+  
+  document.getElementById('finalizedTab').classList.add('active');
+  document.getElementById('calcTab').classList.remove('active');
+  document.getElementById('requestsTab').classList.remove('active');
+  document.getElementById('canceledTab').classList.remove('active');
+  
+  updateFinalizedTable();
+}
+
+// Função para mostrar a seção de cancelados
+function showCanceledSection() {
+  document.getElementById('calculatorSection').style.display = 'none';
+  document.getElementById('requestsSection').style.display = 'none';
+  document.getElementById('finalizedSection').style.display = 'none';
+  document.getElementById('canceledSection').style.display = 'block';
+  
+  document.getElementById('canceledTab').classList.add('active');
+  document.getElementById('calcTab').classList.remove('active');
+  document.getElementById('requestsTab').classList.remove('active');
+  document.getElementById('finalizedTab').classList.remove('active');
+  
+  updateCanceledTable();
+}
+
+// Eventos de navegação
+document.getElementById('requestsTab').addEventListener('click', showRequestsSection);
+document.getElementById('calcTab').addEventListener('click', showCalculatorSection);
+document.getElementById('finalizedTab').addEventListener('click', showFinalizedSection);
+document.getElementById('canceledTab').addEventListener('click', showCanceledSection);
+document.getElementById('backToCalcBtn').addEventListener('click', showCalculatorSection);
+document.getElementById('backToCalcBtn2').addEventListener('click', showCalculatorSection);
+document.getElementById('backToCalcBtn3').addEventListener('click', showCalculatorSection);
+
+// Eventos para upload de PDF
+document.getElementById('pdfUpload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file && file.type === 'application/pdf') {
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('confirmUploadBtn').disabled = false;
+  } else {
+    alert('Por favor, selecione um arquivo PDF válido.');
+    this.value = '';
+    document.getElementById('fileName').textContent = '';
+    document.getElementById('confirmUploadBtn').disabled = true;
+  }
+});
+
+document.getElementById('confirmUploadBtn').addEventListener('click', function() {
+  if (currentRequestId) {
+    const file = document.getElementById('pdfUpload').files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        const base64data = reader.result;
+        const requestIndex = requests.findIndex(r => r.id === currentRequestId);
+        if (requestIndex !== -1) {
+          requests[requestIndex].pdfAssinado = base64data;
+          requests[requestIndex].status = "Assinado";
+          requests[requestIndex].aprovacaoCondominio = formatarData(new Date());
+          localStorage.setItem('requests', JSON.stringify(requests));
+          updateRequestsTable();
+          document.getElementById('uploadSection').style.display = 'none';
+          document.getElementById('pdfUpload').value = '';
+          document.getElementById('fileName').textContent = '';
+          alert('PDF assinado enviado com sucesso!');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+});
+
+document.getElementById('cancelUploadBtn').addEventListener('click', function() {
+  document.getElementById('uploadSection').style.display = 'none';
+  document.getElementById('pdfUpload').value = '';
+  document.getElementById('fileName').textContent = '';
+});
+
+const dataInicio = document.getElementById('data_inicio');
+const dataFim = document.getElementById('data_fim');
+const quantidadeDias = document.getElementById('quantidade_dias');
+const alerta = document.getElementById('alerta-dias');
+
+// Função para calcular diferença de dias
+function calcularDiferencaDias() {
+  // Se não tiver data de início ou fim, limpar e sair
+  if (!dataInicio.value || !dataFim.value) {
+    quantidadeDias.value = "";
+    alerta.style.display = 'none';
+    return;
+  }
+
+  const inicio = new Date(dataInicio.value);
+  const fim = new Date(dataFim.value);
+
+  const diferencaTempo = fim - inicio;
+  const diferencaDias = Math.ceil(diferencaTempo / (1000 * 60 * 60 * 24));
+
+  if (diferencaDias >= 0) {
+    const diasCalculados = diferencaDias + 1; // Inclui o dia inicial
+    quantidadeDias.value = diasCalculados;
+    verificarAlerta(diasCalculados);
+  } else {
+    quantidadeDias.value = '';
+    alerta.style.display = 'none';
+    alert('⚠️ A Data Fim não pode ser menor que a Data Início.');
+  }
+}
+
+// Função para verificar e exibir alerta se for < 11 dias
+function verificarAlerta(dias) {
+  if (dias < 11) {
+    alerta.style.display = 'block';
+  } else {
+    alerta.style.display = 'none';
+  }
+}
+
+// Eventos para alteração das datas
+dataInicio.addEventListener('change', function() {
+  if (dataFim.value) {
+    calcularDiferencaDias();
+  }
+});
+
+dataFim.addEventListener('change', function() {
+  if (dataInicio.value) {
+    calcularDiferencaDias();
+  }
+});
+
+// Carregar solicitações ao iniciar
+updateRequestsTable();
+updateFinalizedTable();
+updateCanceledTable();
+
+// Verificar notificações periodicamente
+setInterval(verificarNotificacoes, 60 * 60 * 1000); // Verificar a cada hora
+
+// Clean up Blob URLs when page unloads
+window.addEventListener('beforeunload', function() {
+  const allRequests = [...requests, ...finalizedRequests, ...canceledRequests];
+  allRequests.forEach(request => {
+    // Revogar URLs de objetos se existirem
+    if (request.pdfOriginal && request.pdfOriginal.startsWith('blob:')) {
+      URL.revokeObjectURL(request.pdfOriginal);
+    }
+    if (request.pdfAssinado && request.pdfAssinado.startsWith('blob:')) {
+      URL.revokeObjectURL(request.pdfAssinado);
+    }
+  });
+});
+</script>
+<!-- Rodapé -->
+<footer class="footer">
+  <div class="footer-content">
+    <p>© 2025 Grupo Solução & Cia - Todos os direitos reservados</p>
+    <p>Este sistema é propriedade exclusiva do Grupo Solução & Cia. Qualquer uso não autorizado é proibido.</p>
+  </div>
+</footer>
+</body>
+</html>
