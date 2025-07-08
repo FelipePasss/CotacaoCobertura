@@ -71,3 +71,10 @@ Grupo Solução & Cia
         media_type="application/pdf",
         filename="proposta.pdf"
     )
+
+from fastapi.responses import FileResponse
+import os
+
+@app.get("/")
+def home():
+    return FileResponse(os.path.join("frontend", "index.html"))
