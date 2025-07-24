@@ -1,14 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Calculadora de Coberturas</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <style>
 
 :root {
@@ -1080,226 +1080,203 @@ button:active {
   background-color: var(--danger-color);
 }
     </style>
-    <!-- Bibliotecas para geração de PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Bibliotecas para geração de PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<div id="loginSection" class="login-wrapper">
-  <div class="login-content">
-    <div class="login-container">
-      <img class="logo" src="https://i.postimg.cc/qRJwhVjQ/GSCIA-FACILITIES-HORIZONTAL.png" alt="Grupo Solução" />
-      <h1>Login</h1>
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="loginEmail">E-mail</label>
-          <input id="loginEmail" type="email" placeholder="Digite seu e-mail" />
-        </div>
-        <div class="form-group">
-          <label for="loginPassword">Senha</label>
-          <input id="loginPassword" type="password" placeholder="Digite sua senha" />
-        </div>
-        <button type="submit">Entrar</button>
-      </form>
-
-      <div class="separator">ou</div>
-
-      <button class="btn-consultor" id="consultantBtn">👤 Acessar como Consultor</button>
-      <form id="consultantForm" class="login-form" style="display: none; margin-top: 10px;">
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-          <div class="form-group" style="text-align:center; margin-bottom:0;">
-            <label for="consultantName">Nome do Consultor</label>
-            <input type="text" id="consultantName" placeholder="Seu nome completo" required style="max-width:300px; margin:0 auto; display:block;">
-          </div>
-          <button type="button" id="confirmConsultantBtn" class="consultant-btn" style="width:220px;">
-            <i class="fas fa-check"></i> Confirmar
+<div class="login-wrapper" id="loginSection">
+<div class="login-content">
+<div class="login-container">
+<img alt="Grupo Solução" class="logo" src="https://i.postimg.cc/qRJwhVjQ/GSCIA-FACILITIES-HORIZONTAL.png"/>
+<h1>Login</h1>
+<form id="loginForm">
+<div class="form-group">
+<label for="loginEmail">E-mail</label>
+<input id="loginEmail" placeholder="Digite seu e-mail" type="email"/>
+</div>
+<div class="form-group">
+<label for="loginPassword">Senha</label>
+<input id="loginPassword" placeholder="Digite sua senha" type="password"/>
+</div>
+<button type="submit">Entrar</button>
+</form>
+<div class="separator">ou</div>
+<button class="btn-consultor" id="consultantBtn">👤 Acessar como Consultor</button>
+<form class="login-form" id="consultantForm" style="display: none; margin-top: 10px;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+<div class="form-group" style="text-align:center; margin-bottom:0;">
+<label for="consultantName">Nome do Consultor</label>
+<input id="consultantName" placeholder="Seu nome completo" required="" style="max-width:300px; margin:0 auto; display:block;" type="text"/>
+</div>
+<button class="consultant-btn" id="confirmConsultantBtn" style="width:220px;" type="button">
+<i class="fas fa-check"></i> Confirmar
           </button>
-          <button type="button" id="backToLoginBtn" class="login-btn" style="background: #6c757d; width:220px;">
-            <i class="fas fa-arrow-left"></i> Voltar para Login
+<button class="login-btn" id="backToLoginBtn" style="background: #6c757d; width:220px;" type="button">
+<i class="fas fa-arrow-left"></i> Voltar para Login
           </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <footer class="footer">
-    <p>© 2025 Grupo Solução - Todos os direitos reservados.</p>
-  </footer>
+</div>
+</form>
 </div>
 </div>
+<footer class="footer">
+<p>© 2025 Grupo Solução - Todos os direitos reservados.</p>
+</footer>
+</div>
 
-<div id="mainSection" class="container" style="display: none;">
-  <div class="user-info">
-    <div class="user-info-content">
-      <div class="user-name" id="userName">Usuário</div>
-      <div class="user-role" id="userRole"></div>
-    </div>
-    
-    <div class="user-actions">
-      <button id="manageUsersBtn" class="admin-btn" style="display: none;">
-        <i class="fas fa-users-cog"></i> Admin
+<div class="container" id="mainSection" style="display: none;">
+<div class="user-info">
+<div class="user-info-content">
+<div class="user-name" id="userName">Usuário</div>
+<div class="user-role" id="userRole"></div>
+</div>
+<div class="user-actions">
+<button class="admin-btn" id="manageUsersBtn" style="display: none;">
+<i class="fas fa-users-cog"></i> Admin
       </button>
-      <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
-    </div>
-  </div>
-  
-  <div class="tabs">
-    <button class="tab-btn active" id="calcTab">Cotação</button>
-    <button class="tab-btn" id="requestsTab">Quadro de Solicitações</button>
-    <button class="tab-btn" id="finalizedTab">Finalizados</button>
-    <button class="tab-btn" id="canceledTab">Cancelados</button>
-    <button class="tab-btn" id="dashboardTab">Dashboard</button>
-    <button class="tab-btn" id="faturarTab" style="display:none;">A Faturar</button>
-  </div>
-  
-  <div id="calculatorSection">
-    <div class="card">
-      <div class="header">
-        <img src="https://i.postimg.cc/qRJwhVjQ/GSCIA-FACILITIES-HORIZONTAL.png" alt="Logo Grupo Solução" class="logo">
-        <h1>Cotações De Coberturas e Diárias</h1>
-      </div>
-      
-      <form id="calcForm">
-        <div class="form-group">
-          <label for="condominio">Condomínio <span style="color: red;">*</span></label>
-          <input type="text" id="condominio" name="condominio" placeholder="Nome do condomínio" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="data_inicio">Data Início <span style="color: red;">*</span></label>
-          <input type="date" id="data_inicio" name="data_inicio" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="data_fim">Data Fim <span style="color: red;">*</span></label>
-          <input type="date" id="data_fim" name="data_fim" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="Quantidade De Colaboradores">Colaboradores <span style="color: red;">*</span></label>
-          <input type="text" id="Quantidade De Colaboradores" name="Quantidade De Colaboradores" placeholder="Ex.:01" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="Solicitante">Solicitante <span style="color: red;">*</span></label>
-          <input type="text" id="Solicitante" name="Solicitante" placeholder="Ex.:Quem está realizando a cotação" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="E-mail">E-mail <span style="color: red;">*</span></label>
-          <input type="email" id="E-mail" name="E-mail" placeholder="Ex.:E-mail De Cobrança para retorno" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="Observações">Observações</label>
-          <input type="text" id="Observações" name="Observações" placeholder="Ex.:Obs">
-        </div>
-        
-        <div class="form-group">
-          <label for="tipo_faturamento">Tipo De Faturamento <span style="color: red;">*</span></label>
-          <select id="tipo_faturamento" name="tipo_faturamento" required>
-            <option value="">Selecione uma opção</option>
-            <option value="Terceirizado">Terceirizado</option>
-            <option value="Orgânico">Orgânico</option>
-            <option value="Linha Verde">Linha Verde</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label for="quantidade_dias">Quantidade De Dias</label>
-          <input type="number" id="quantidade_dias" name="quantidade_dias" placeholder="Ex.: 30" min="1" readonly>
-          <small id="alerta-dias" style="color: red; display: none;">
+<button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+</div>
+</div>
+<div class="tabs">
+<button class="tab-btn active" id="calcTab">Cotação</button>
+<button class="tab-btn" id="requestsTab">Quadro de Solicitações</button>
+<button class="tab-btn" id="finalizedTab">Finalizados</button>
+<button class="tab-btn" id="canceledTab">Cancelados</button>
+<button class="tab-btn" id="dashboardTab">Dashboard</button>
+<button class="tab-btn" id="faturarTab" style="display:none;">A Faturar</button>
+</div>
+<div id="calculatorSection">
+<div class="card">
+<div class="header">
+<img alt="Logo Grupo Solução" class="logo" src="https://i.postimg.cc/qRJwhVjQ/GSCIA-FACILITIES-HORIZONTAL.png"/>
+<h1>Cotações De Coberturas e Diárias</h1>
+</div>
+<form id="calcForm">
+<div class="form-group">
+<label for="condominio">Condomínio <span style="color: red;">*</span></label>
+<input id="condominio" name="condominio" placeholder="Nome do condomínio" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="data_inicio">Data Início <span style="color: red;">*</span></label>
+<input id="data_inicio" name="data_inicio" required="" type="date"/>
+</div>
+<div class="form-group">
+<label for="data_fim">Data Fim <span style="color: red;">*</span></label>
+<input id="data_fim" name="data_fim" required="" type="date"/>
+</div>
+<div class="form-group">
+<label for="Quantidade De Colaboradores">Colaboradores <span style="color: red;">*</span></label>
+<input id="Quantidade De Colaboradores" name="Quantidade De Colaboradores" placeholder="Ex.:01" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="Solicitante">Solicitante <span style="color: red;">*</span></label>
+<input id="Solicitante" name="Solicitante" placeholder="Ex.:Quem está realizando a cotação" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="E-mail">E-mail <span style="color: red;">*</span></label>
+<input id="E-mail" name="E-mail" placeholder="Ex.:E-mail De Cobrança para retorno" required="" type="email"/>
+</div>
+<div class="form-group">
+<label for="Observações">Observações</label>
+<input id="Observações" name="Observações" placeholder="Ex.:Obs" type="text"/>
+</div>
+<div class="form-group">
+<label for="tipo_faturamento">Tipo De Faturamento <span style="color: red;">*</span></label>
+<select id="tipo_faturamento" name="tipo_faturamento" required="">
+<option value="">Selecione uma opção</option>
+<option value="Terceirizado">Terceirizado</option>
+<option value="Orgânico">Orgânico</option>
+<option value="Linha Verde">Linha Verde</option>
+</select>
+</div>
+<div class="form-group">
+<label for="quantidade_dias">Quantidade De Dias</label>
+<input id="quantidade_dias" min="1" name="quantidade_dias" placeholder="Ex.: 30" readonly="" type="number"/>
+<small id="alerta-dias" style="color: red; display: none;">
             ⚠️ Atenção: Para contratos com menos de 11 dias, os valores diários são diferenciados.
           </small>
-        </div>
-        
-        <div class="form-group">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="cargo">Cargo</label>
-            <small>
-              <a href="#" id="ajudaCargo" style="color: var(--primary-color);">
-                <i class="fas fa-question-circle"></i> Não encontrou o cargo?
+</div>
+<div class="form-group">
+<div style="display: flex; align-items: center; justify-content: space-between;">
+<label for="cargo">Cargo</label>
+<small>
+<a href="#" id="ajudaCargo" style="color: var(--primary-color);">
+<i class="fas fa-question-circle"></i> Não encontrou o cargo?
               </a>
-            </small>
-          </div>
-          
-          <select id="cargo" name="cargo" required>
-            <option value="" disabled selected>Selecione um cargo</option>
-            <option value="Administrador">Administrador</option>
-            <option value="Porteiro Diurno">Porteiro Diurno</option>
-            <option value="Porteiro Noturno">Porteiro Noturno</option>
-            <option value="Vigia Diurno">Vigia Diurno</option>
-            <option value="Vigia Noturno">Vigia Noturno</option>
-            <option value="Encarregado De Manutenção">Encarregado De Manutenção</option>
-            <option value="Supervisor Operacional Diurno">Supervisor Operacional Diurno</option>
-            <option value="Supervisor Operacional Noturno">Supervisor Operacional Noturno</option>
-            <option value="Zelador">Zelador</option>
-            <option value="Jardineiro">Jardineiro</option>
-            <option value="Faxineiro">Faxineiro</option>
-            <option value="Bombeiro Hidráulico">Bombeiro Hidráulico</option>
-            <option value="Eletricista">Eletricista</option>
-            <option value="Pintor">Pintor</option>
-            <option value="Pedreiro">Pedreiro</option>
-            <option value="Auxiliar De Serviços Gerais">Auxiliar De Serviços Gerais</option>
-            <option value="Recepcionista">Recepcionista</option>
-            <option value="Controlador De Acesso">Controlador De Acesso</option>
-            <option value="Auxiliar De Limpeza">Auxiliar De Limpeza</option>
-          </select>
-        </div>
-        
-      <div style="display: flex; justify-content: center;">
-        <button type="submit" style="margin: 0 auto; display: block;">Calcular Cotação</button>
-        
-      </div>
-      </form>
-
-      <div id="result" class="result" style="display: none;"></div>
-    </div>
-  </div>
-  
-  <div id="requestsContainer" class="requests-container">
-    <div class="requests-header" style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
-      <h2 style="margin: 0; text-align: center;">Quadro de Solicitações</h2>
-      <div style="display: flex; justify-content: flex-end; width: 100%; margin-top: 10px;">
-        <div style="display: flex; gap: 10px; align-items: center; background-color: white; padding: 10px 0;">
-          <button id="exportRequestsBtn" class="export-btn" style="width: 180px; display: flex; align-items: center; justify-content: center;">
-            <i class="fas fa-file-excel"></i>&nbsp;Exportar Excel
+</small>
+</div>
+<select id="cargo" name="cargo" required="">
+<option disabled="" selected="" value="">Selecione um cargo</option>
+<option value="Administrador">Administrador</option>
+<option value="Porteiro Diurno">Porteiro Diurno</option>
+<option value="Porteiro Noturno">Porteiro Noturno</option>
+<option value="Vigia Diurno">Vigia Diurno</option>
+<option value="Vigia Noturno">Vigia Noturno</option>
+<option value="Encarregado De Manutenção">Encarregado De Manutenção</option>
+<option value="Supervisor Operacional Diurno">Supervisor Operacional Diurno</option>
+<option value="Supervisor Operacional Noturno">Supervisor Operacional Noturno</option>
+<option value="Zelador">Zelador</option>
+<option value="Jardineiro">Jardineiro</option>
+<option value="Faxineiro">Faxineiro</option>
+<option value="Bombeiro Hidráulico">Bombeiro Hidráulico</option>
+<option value="Eletricista">Eletricista</option>
+<option value="Pintor">Pintor</option>
+<option value="Pedreiro">Pedreiro</option>
+<option value="Auxiliar De Serviços Gerais">Auxiliar De Serviços Gerais</option>
+<option value="Recepcionista">Recepcionista</option>
+<option value="Controlador De Acesso">Controlador De Acesso</option>
+<option value="Auxiliar De Limpeza">Auxiliar De Limpeza</option>
+</select>
+</div>
+<div style="display: flex; justify-content: center;">
+<button style="margin: 0 auto; display: block;" type="submit">Calcular Cotação</button>
+</div>
+</form>
+<div class="result" id="result" style="display: none;"></div>
+</div>
+</div>
+<div class="requests-container" id="requestsContainer">
+<div class="requests-header" style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+<h2 style="margin: 0; text-align: center;">Quadro de Solicitações</h2>
+<div style="display: flex; justify-content: flex-end; width: 100%; margin-top: 10px;">
+<div style="display: flex; gap: 10px; align-items: center; background-color: white; padding: 10px 0;">
+<button class="export-btn" id="exportRequestsBtn" style="width: 180px; display: flex; align-items: center; justify-content: center;">
+<i class="fas fa-file-excel"></i> Exportar Excel
           </button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="table-container">
-      <!-- Gráficos de evolução por status -->
-      <div id="status-charts" style="width:100%; background:transparent; margin-bottom:30px; display:flex; flex-wrap:wrap; gap:30px; justify-content:center; align-items:center;">
-      </div>
-      <table class="requests-table" id="requestsTable">
-        <thead>
-          <tr>
-            <th onclick="sortTable(0)" data-column="0">ID <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(1)" data-column="1">Condomínio <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(2)" data-column="2">Data Início <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(3)" data-column="3">Data Fim <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(4)" data-column="4">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(5)" data-column="5">Solicitante <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(6)" data-column="6">E-mail <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(7)" data-column="7">Observações <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(8)" data-column="8">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(9)" data-column="9">Dias <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(10)" data-column="10">Cargo <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(11)" data-column="11">Valor <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(12)" data-column="12">Desconto <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(13)" data-column="13">Valor Atualizado <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(14)" data-column="14">Data Criação <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(15)" data-column="15">Status <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(17)" data-column="17">Realizado <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(19)" data-column="18">Ações <i class="fas fa-sort filter-icon"></i></th>
-          </tr>
-        </thead>
-        <tbody id="requestsTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-    <style>
+</div>
+</div>
+</div>
+<div class="table-container">
+<!-- Gráficos de evolução por status -->
+<div id="status-charts" style="width:100%; background:transparent; margin-bottom:30px; display:flex; flex-wrap:wrap; gap:30px; justify-content:center; align-items:center;">
+</div>
+<table class="requests-table" id="requestsTable">
+<thead>
+<tr>
+<th data-column="0" onclick="sortTable(0)">ID <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="1" onclick="sortTable(1)">Condomínio <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="2" onclick="sortTable(2)">Data Início <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="3" onclick="sortTable(3)">Data Fim <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="4" onclick="sortTable(4)">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="5" onclick="sortTable(5)">Solicitante <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="6" onclick="sortTable(6)">E-mail <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="7" onclick="sortTable(7)">Observações <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="8" onclick="sortTable(8)">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="9" onclick="sortTable(9)">Dias <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="10" onclick="sortTable(10)">Cargo <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="11" onclick="sortTable(11)">Valor <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="12" onclick="sortTable(12)">Desconto <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="13" onclick="sortTable(13)">Valor Atualizado <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="14" onclick="sortTable(14)">Data Criação <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="15" onclick="sortTable(15)">Status <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="17" onclick="sortTable(17)">Realizado <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="18" onclick="sortTable(19)">Ações <i class="fas fa-sort filter-icon"></i></th>
+</tr>
+</thead>
+<tbody id="requestsTableBody"></tbody>
+</table>
+</div>
+</div>
+<style>
       /* Aplica zoom de 100% na tela de login e 80% nas demais */
       #loginSection {
         zoom: 1.0;
@@ -1330,260 +1307,246 @@ button:active {
       }
       
     </style>
-  
-  <div id="finalizedContainer" class="requests-container finalized-container">
-    <div class="requests-header finalized-header">
-      <h2 style="text-align:center; width:100%;">Finalizados</h2>
-      <div class="export-controls">
-        <input type="date" id="filterFinalizedDate" class="filter-input" placeholder="Data Finalização">
-        <input type="text" id="searchFinalized" class="filter-input" placeholder="Buscar...">
-        <button id="exportFinalizedBtn" class="export-btn">
-          <i class="fas fa-file-excel"></i> Exportar Excel
+<div class="requests-container finalized-container" id="finalizedContainer">
+<div class="requests-header finalized-header">
+<h2 style="text-align:center; width:100%;">Finalizados</h2>
+<div class="export-controls">
+<input class="filter-input" id="filterFinalizedDate" placeholder="Data Finalização" type="date"/>
+<input class="filter-input" id="searchFinalized" placeholder="Buscar..." type="text"/>
+<button class="export-btn" id="exportFinalizedBtn">
+<i class="fas fa-file-excel"></i> Exportar Excel
         </button>
-      </div>
-    </div>
-    
-    <div class="table-container">
-      <table class="requests-table finalized-table" id="finalizedTable">
-        <thead>
-          <tr>
-            <th onclick="sortTable(0)" data-column="0">ID <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(1)" data-column="1">Condomínio <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(2)" data-column="2">Data Início <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(3)" data-column="3">Data Fim <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(4)" data-column="4">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(5)" data-column="5">Solicitante <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(6)" data-column="6">E-mail <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(7)" data-column="7">Observações <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(8)" data-column="8">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(9)" data-column="9">Dias <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(10)" data-column="10">Cargo <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(11)" data-column="11">Valor <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(12)" data-column="12">Data Criação <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(13)" data-column="13">Data Finalização <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(14)" data-column="14">Desconto <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(15)" data-column="15">Ações <i class="fas fa-sort filter-icon"></i></th>
-          </tr>
-        </thead>
-        <tbody id="finalizedTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-  
-  <div id="canceledContainer" class="requests-container canceled-container">
-    <div class="requests-header canceled-header">
-      <h2 style="text-align:center; width:100%;">Cancelados</h2>
-      <div class="export-controls">
-        <input type="text" id="searchCanceled" class="filter-input" placeholder="Buscar...">
-        <button id="exportCanceledBtn" class="export-btn">
-          <i class="fas fa-file-excel"></i> Exportar Excel
+</div>
+</div>
+<div class="table-container">
+<table class="requests-table finalized-table" id="finalizedTable">
+<thead>
+<tr>
+<th data-column="0" onclick="sortTable(0)">ID <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="1" onclick="sortTable(1)">Condomínio <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="2" onclick="sortTable(2)">Data Início <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="3" onclick="sortTable(3)">Data Fim <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="4" onclick="sortTable(4)">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="5" onclick="sortTable(5)">Solicitante <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="6" onclick="sortTable(6)">E-mail <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="7" onclick="sortTable(7)">Observações <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="8" onclick="sortTable(8)">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="9" onclick="sortTable(9)">Dias <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="10" onclick="sortTable(10)">Cargo <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="11" onclick="sortTable(11)">Valor <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="12" onclick="sortTable(12)">Data Criação <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="13" onclick="sortTable(13)">Data Finalização <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="14" onclick="sortTable(14)">Desconto <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="15" onclick="sortTable(15)">Ações <i class="fas fa-sort filter-icon"></i></th>
+</tr>
+</thead>
+<tbody id="finalizedTableBody"></tbody>
+</table>
+</div>
+</div>
+<div class="requests-container canceled-container" id="canceledContainer">
+<div class="requests-header canceled-header">
+<h2 style="text-align:center; width:100%;">Cancelados</h2>
+<div class="export-controls">
+<input class="filter-input" id="searchCanceled" placeholder="Buscar..." type="text"/>
+<button class="export-btn" id="exportCanceledBtn">
+<i class="fas fa-file-excel"></i> Exportar Excel
         </button>
-      </div>
-    </div>
-    
-    <div class="table-container">
-      <table class="requests-table canceled-table" id="canceledTable">
-        <thead>
-          <tr>
-            <th onclick="sortTable(0)" data-column="0">ID <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(1)" data-column="1">Condomínio <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(2)" data-column="2">Data Início <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(3)" data-column="3">Data Fim <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(4)" data-column="4">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(5)" data-column="5">Solicitante <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(6)" data-column="6">E-mail <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(7)" data-column="7">Observações <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(8)" data-column="8">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(9)" data-column="9">Dias <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(10)" data-column="10">Cargo <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(11)" data-column="11">Valor <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(12)" data-column="12">Data Criação <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(13)" data-column="13">Data Cancelamento <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(14)" data-column="14">Motivo <i class="fas fa-sort filter-icon"></i></th>
-            <th onclick="sortTable(15)" data-column="15">Ações <i class="fas fa-sort filter-icon"></i></th>
-          </tr>
-        </thead>
-        <tbody id="canceledTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-  
-  <div id="dashboardContainer" class="dashboard-container">
-    <div class="dashboard-header">
-      <h2>Dashboard Gerencial</h2>
-      <p>Visão geral do sistema de cotações</p>
-    </div>
-    
-    <div class="dashboard-stats">
-      <div class="stat-card">
-        <h3>Total de Cotações</h3>
-        <div class="stat-value" id="totalCotacoes">0</div>
-        <div class="stat-label">Este mês</div>
-      </div>
-      <div class="stat-card">
-        <h3>Aprovadas</h3>
-        <div class="stat-value" id="cotacoesAprovadas">0</div>
-        <div class="stat-label">Taxa de aprovação</div>
-      </div>
-      <div class="stat-card">
-        <h3>Canceladas</h3>
-        <div class="stat-value" id="cotacoesCanceladas">0</div>
-        <div class="stat-label">Taxa de cancelamento</div>
-      </div>
-      <div class="stat-card">
-        <h3>Em andamento</h3>
-        <div class="stat-value" id="cotacoesAndamento">0%</div>
-        <div class="stat-label">Taxa em andamento</div>
-      </div>
-      <div class="stat-card">
-        <h3>Valor Total</h3>
-        <div class="stat-value" id="valorTotal">R$ 0,00</div>
-      </div>
-    </div>
-    <div class="dashboard-stats">
-      <div class="stat-card">
-        <div style="margin-top:18px; text-align:center;">
-          <div style="margin-bottom:8px;"><strong>Pendente:</strong> <span id="qtdPendente">0</span></div>
-          <div style="margin-bottom:8px;"><strong>Finalizada:</strong> <span id="qtdFinalizada">0</span></div>
-          <div><strong>Cancelada:</strong> <span id="qtdCancelada">0</span></div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <h3>Valor</h3>
-        <div class="stat-value" id="valorAprovada">R$ 0,00</div>
-        <div class="stat-label">Valor de aprovação</div>
-      </div>
-      <div class="stat-card">
-        <h3>Valor</h3>
-        <div class="stat-value" id="valorCancelada">R$ 0,00</div>
-        <div class="stat-label">Valor de cancelamento</div>
-      </div>
-            <div class="stat-card">
-        <h3>Valor</h3>
-        <div class="stat-value" id="valorAndamento">R$ 0,00</div>
-        <div class="stat-label">Valor em andamento</div>
-      </div>
-    </div>
-    
-    <div class="chart-container">
+</div>
+</div>
+<div class="table-container">
+<table class="requests-table canceled-table" id="canceledTable">
+<thead>
+<tr>
+<th data-column="0" onclick="sortTable(0)">ID <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="1" onclick="sortTable(1)">Condomínio <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="2" onclick="sortTable(2)">Data Início <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="3" onclick="sortTable(3)">Data Fim <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="4" onclick="sortTable(4)">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="5" onclick="sortTable(5)">Solicitante <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="6" onclick="sortTable(6)">E-mail <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="7" onclick="sortTable(7)">Observações <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="8" onclick="sortTable(8)">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="9" onclick="sortTable(9)">Dias <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="10" onclick="sortTable(10)">Cargo <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="11" onclick="sortTable(11)">Valor <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="12" onclick="sortTable(12)">Data Criação <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="13" onclick="sortTable(13)">Data Cancelamento <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="14" onclick="sortTable(14)">Motivo <i class="fas fa-sort filter-icon"></i></th>
+<th data-column="15" onclick="sortTable(15)">Ações <i class="fas fa-sort filter-icon"></i></th>
+</tr>
+</thead>
+<tbody id="canceledTableBody"></tbody>
+</table>
+</div>
+</div>
+<div class="dashboard-container" id="dashboardContainer">
+<div class="dashboard-header">
+<h2>Dashboard Gerencial</h2>
+<p>Visão geral do sistema de cotações</p>
+</div>
+<div class="dashboard-stats">
+<div class="stat-card">
+<h3>Total de Cotações</h3>
+<div class="stat-value" id="totalCotacoes">0</div>
+<div class="stat-label">Este mês</div>
+</div>
+<div class="stat-card">
+<h3>Aprovadas</h3>
+<div class="stat-value" id="cotacoesAprovadas">0</div>
+<div class="stat-label">Taxa de aprovação</div>
+</div>
+<div class="stat-card">
+<h3>Canceladas</h3>
+<div class="stat-value" id="cotacoesCanceladas">0</div>
+<div class="stat-label">Taxa de cancelamento</div>
+</div>
+<div class="stat-card">
+<h3>Em andamento</h3>
+<div class="stat-value" id="cotacoesAndamento">0%</div>
+<div class="stat-label">Taxa em andamento</div>
+</div>
+<div class="stat-card">
+<h3>Valor Total</h3>
+<div class="stat-value" id="valorTotal">R$ 0,00</div>
+</div>
+</div>
+<div class="dashboard-stats">
+<div class="stat-card">
+<div style="margin-top:18px; text-align:center;">
+<div style="margin-bottom:8px;"><strong>Pendente:</strong> <span id="qtdPendente">0</span></div>
+<div style="margin-bottom:8px;"><strong>Finalizada:</strong> <span id="qtdFinalizada">0</span></div>
+<div><strong>Cancelada:</strong> <span id="qtdCancelada">0</span></div>
+</div>
+</div>
+<div class="stat-card">
+<h3>Valor</h3>
+<div class="stat-value" id="valorAprovada">R$ 0,00</div>
+<div class="stat-label">Valor de aprovação</div>
+</div>
+<div class="stat-card">
+<h3>Valor</h3>
+<div class="stat-value" id="valorCancelada">R$ 0,00</div>
+<div class="stat-label">Valor de cancelamento</div>
+</div>
+<div class="stat-card">
+<h3>Valor</h3>
+<div class="stat-value" id="valorAndamento">R$ 0,00</div>
+<div class="stat-label">Valor em andamento</div>
+</div>
+</div>
+<div class="chart-container">
 <h3 style="text-align: center; margin-bottom: 15px;">Cotações</h3>
-
-      <div class="table-container" style="margin-top:0;">
-        <table class="requests-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Condomínio</th>
-              <th>Data Início</th>
-              <th>Data Fim</th>
-              <th>Colaboradores</th>
-              <th>Solicitante</th>
-              <th>E-mail</th>
-              <th>Observações</th>
-              <th>Tipo Faturamento</th>
-              <th>Dias</th>
-              <th>Cargo</th>
-              <th>Valor</th>
-              <th>Desconto</th>
-              <th>Valor Atualizado</th>
-              <th>Data Criação</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="dashboardStatusTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<div class="table-container" style="margin-top:0;">
+<table class="requests-table">
+<thead>
+<tr>
+<th>ID</th>
+<th>Condomínio</th>
+<th>Data Início</th>
+<th>Data Fim</th>
+<th>Colaboradores</th>
+<th>Solicitante</th>
+<th>E-mail</th>
+<th>Observações</th>
+<th>Tipo Faturamento</th>
+<th>Dias</th>
+<th>Cargo</th>
+<th>Valor</th>
+<th>Desconto</th>
+<th>Valor Atualizado</th>
+<th>Data Criação</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="dashboardStatusTableBody"></tbody>
+</table>
 </div>
 </div>
-<div id="usersModal" class="users-modal">
-    <div class="modal-content">
-  <button class="close-modal" onclick="closeUsersModal()" style="font-size: 20px; padding: 4px 10px;">&times;</button>
-    <h2>Gerenciamento de Usuários</h2>
-    <div style="display: flex; justify-content: center; align-items: flex-end; gap: 32px; margin-bottom: 30px;">
-      <div class="form-group" style="margin-bottom:0;">
-        <label for="newUserEmail" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Novo Usuário</label>
-        <input type="email" id="newUserEmail" placeholder="E-mail do usuário" style="text-align:center;width:220px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;">
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <label for="newUserPassword" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Senha</label>
-        <input type="password" id="newUserPassword" placeholder="Senha" style="text-align:center;width:180px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;">
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <label for="newUserRole" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Cargo</label>
-        <select id="newUserRole" class="role-select" style="text-align:center;width:180px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;">
-          <option value="consultant">Consultor</option>
-          <option value="admin">Administrador</option>
-          <option value="finance">Financeiro</option>
-          <option value="operations">Operacional</option>
-        </select>
-      </div>
-    </div>
-    
-    <button onclick="addUser()" class="btn-success">Adicionar Usuário</button>
-    
-    <div class="user-list" id="usersList"></div>
-  </div>
+</div>
 </div>
 
+<div class="users-modal" id="usersModal">
+<div class="modal-content">
+<button class="close-modal" onclick="closeUsersModal()" style="font-size: 20px; padding: 4px 10px;">×</button>
+<h2>Gerenciamento de Usuários</h2>
+<div style="display: flex; justify-content: center; align-items: flex-end; gap: 32px; margin-bottom: 30px;">
+<div class="form-group" style="margin-bottom:0;">
+<label for="newUserEmail" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Novo Usuário</label>
+<input id="newUserEmail" placeholder="E-mail do usuário" style="text-align:center;width:220px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;" type="email"/>
+</div>
+<div class="form-group" style="margin-bottom:0;">
+<label for="newUserPassword" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Senha</label>
+<input id="newUserPassword" placeholder="Senha" style="text-align:center;width:180px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;" type="password"/>
+</div>
+<div class="form-group" style="margin-bottom:0;">
+<label for="newUserRole" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Cargo</label>
+<select class="role-select" id="newUserRole" style="text-align:center;width:180px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;">
+<option value="consultant">Consultor</option>
+<option value="admin">Administrador</option>
+<option value="finance">Financeiro</option>
+<option value="operations">Operacional</option>
+</select>
+</div>
+</div>
+<button class="btn-success" onclick="addUser()">Adicionar Usuário</button>
+<div class="user-list" id="usersList"></div>
+</div>
+</div>
 <!-- Remove o template PDF da visualização das telas, deixa oculto -->
-
 <div id="pdf-template" style="display:none;width:800px;height:1130px;position:relative;background:#fff;overflow:hidden;font-family:Arial,sans-serif;">
-  <img src="./img/Fundo.png" alt="Fundo" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;object-fit:cover;pointer-events:none;user-select:none;" />
-  <div class="content-wrapper" style="position:relative;z-index:1;margin-top:100px;padding:40px;">
-    <p><strong>Ao Condomínio <span id="pdf-condominio"></span></strong></p>
-    <p style="text-align:left;">Prezado(a),</p>
-    <p style="text-align:justify;">Com satisfação apresentamos a proposta do nosso plano de cobertura terceirizada, serviço que foi criado pelo Grupo Solução &amp; Cia para atender as necessidades dos nossos clientes que possuem seu quadro de colaboradores contratados pela modalidade orgânica.</p>
-    <p style="text-align:justify;">O programa constitui no fornecimento de mão de obra especializada para a cobertura do período solicitado pelo condomínio.</p>
-    <p>Facilidades e Benefícios do plano coberturas terceirizada:</p>
-    <ul style="text-align:justify;padding-left:20px;">
-      <li>Mão de obra especializada e sem vínculos empregatícios;</li>
-      <li>Tranquilidade com a exclusão da necessidade da contratação de novos colaboradores;</li>
-      <li>Segurança na operação da rotina do empreendimento, tendo em vista treinamento prévio;</li>
-      <li>Garantia de 100% na cobertura dos serviços contratados;</li>
-      <li>Possibilidade de substituição do colaborador sem custos para o condomínio;</li>
-      <li>Economia na aquisição de fardamentos.</li>
-    </ul>
-    <p style="text-align:justify;">Com a programação estabelecida, teremos a cobertura de <strong><span id="pdf-quantidade"></span> <span id="pdf-cargo"></span></strong> distribuída conforme quadro a seguir:</p>
-    <table style="width:100%;border-collapse:collapse;margin:20px 0;">
-      <tr>
-        <th style="border:1px solid #000;padding:8px;text-align:center;">FUNÇÃO</th>
-        <th style="border:1px solid #000;padding:8px;text-align:center;">PERÍODO</th>
-      </tr>
-      <tr>
-        <td style="border:1px solid #000;padding:8px;"><span id="pdf-funcao"></span></td>
-        <td style="border:1px solid #000;padding:8px;"><span id="pdf-periodo"></span></td>
-      </tr>
-    </table>
-    <p style="text-align:justify;">O valor da prestação de serviço será de <strong><span id="pdf-valor"></span></strong>.</p>
-    <p style="text-align:justify;">O valor da cobertura contempla custos com salários, encargos, fardamentos e benefícios.</p>
-    <p style="text-align:justify;">De acordo com a proposta.</p>
-    <p style="text-align:center;margin-bottom:30px;">Salvador-BA, <span id="pdf-data"></span></p>
-    <div style="margin-top:50px;display:flex;justify-content:space-between;">
-      <div>
-        <div style="border-bottom:1px solid #000;width:200px;margin-top:20px;"></div>
-        <p>Grupo Solução &amp; Cia</p>
-      </div>
-      <div>
-        <div style="border-bottom:1px solid #000;width:200px;margin-top:20px;"></div>
-        <p>Condomínio <span id="pdf-condominio-final"></span></p>
-      </div>
-    </div>
-  </div>
+<img alt="Fundo" src="img/Fundo.png" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;object-fit:cover;pointer-events:none;user-select:none;">
+<div class="content-wrapper" style="position:relative;z-index:1;margin-top:100px;padding:40px;">
+<p><strong>Ao Condomínio <span id="pdf-condominio"></span></strong></p>
+<p style="text-align:left;">Prezado(a),</p>
+<p style="text-align:justify;">Com satisfação apresentamos a proposta do nosso plano de cobertura terceirizada, serviço que foi criado pelo Grupo Solução &amp; Cia para atender as necessidades dos nossos clientes que possuem seu quadro de colaboradores contratados pela modalidade orgânica.</p>
+<p style="text-align:justify;">O programa constitui no fornecimento de mão de obra especializada para a cobertura do período solicitado pelo condomínio.</p>
+<p>Facilidades e Benefícios do plano coberturas terceirizada:</p>
+<ul style="text-align:justify;padding-left:20px;">
+<li>Mão de obra especializada e sem vínculos empregatícios;</li>
+<li>Tranquilidade com a exclusão da necessidade da contratação de novos colaboradores;</li>
+<li>Segurança na operação da rotina do empreendimento, tendo em vista treinamento prévio;</li>
+<li>Garantia de 100% na cobertura dos serviços contratados;</li>
+<li>Possibilidade de substituição do colaborador sem custos para o condomínio;</li>
+<li>Economia na aquisição de fardamentos.</li>
+</ul>
+<p style="text-align:justify;">Com a programação estabelecida, teremos a cobertura de <strong><span id="pdf-quantidade"></span> <span id="pdf-cargo"></span></strong> distribuída conforme quadro a seguir:</p>
+<table style="width:100%;border-collapse:collapse;margin:20px 0;">
+<tr>
+<th style="border:1px solid #000;padding:8px;text-align:center;">FUNÇÃO</th>
+<th style="border:1px solid #000;padding:8px;text-align:center;">PERÍODO</th>
+</tr>
+<tr>
+<td style="border:1px solid #000;padding:8px;"><span id="pdf-funcao"></span></td>
+<td style="border:1px solid #000;padding:8px;"><span id="pdf-periodo"></span></td>
+</tr>
+</table>
+<p style="text-align:justify;">O valor da prestação de serviço será de <strong><span id="pdf-valor"></span></strong>.</p>
+<p style="text-align:justify;">O valor da cobertura contempla custos com salários, encargos, fardamentos e benefícios.</p>
+<p style="text-align:justify;">De acordo com a proposta.</p>
+<p style="text-align:center;margin-bottom:30px;">Salvador-BA, <span id="pdf-data"></span></p>
+<div style="margin-top:50px;display:flex;justify-content:space-between;">
+<div>
+<div style="border-bottom:1px solid #000;width:200px;margin-top:20px;"></div>
+<p>Grupo Solução &amp; Cia</p>
 </div>
-
+<div>
+<div style="border-bottom:1px solid #000;width:200px;margin-top:20px;"></div>
+<p>Condomínio <span id="pdf-condominio-final"></span></p>
+</div>
+</div>
+</div>
+</img></div>
 <div id="uploadPdfModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-  <div style="background: white; padding: 20px; border-radius: 8px; width: 400px;">
-    <h3>Enviar PDF Assinado</h3>
-    <input type="file" id="pdfAssinadoInput" accept=".pdf" style="margin: 15px 0;">
-    <div style="display: flex; justify-content: space-between;">
-      <button onclick="confirmarUploadPdf()" style="background: #4CAF50; color: white; padding: 8px 15px; border: none; border-radius: 4px;">✔ Confirmar</button>
-      <button onclick="cancelarUploadPdf()" style="background: #f44336; color: white; padding: 8px 15px; border: none; border-radius: 4px;">✘ Cancelar</button>
-    </div>
-  </div>
+<div style="background: white; padding: 20px; border-radius: 8px; width: 400px;">
+<h3>Enviar PDF Assinado</h3>
+<input accept=".pdf" id="pdfAssinadoInput" style="margin: 15px 0;" type="file"/>
+<div style="display: flex; justify-content: space-between;">
+<button onclick="confirmarUploadPdf()" style="background: #4CAF50; color: white; padding: 8px 15px; border: none; border-radius: 4px;">✔ Confirmar</button>
+<button onclick="cancelarUploadPdf()" style="background: #f44336; color: white; padding: 8px 15px; border: none; border-radius: 4px;">✘ Cancelar</button>
 </div>
-
+</div>
+</div>
 <script>
 // ================ VARIÁVEIS GLOBAIS ================
 let currentUser = null;
@@ -3554,7 +3517,7 @@ function confirmarUploadPdf() {
     reader.readAsDataURL(file);
 }
 </script>
-</body>
+
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
