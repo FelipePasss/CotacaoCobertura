@@ -3,7 +3,7 @@ name: Build and deploy Python app to Azure Web App - CotacaoCobertra
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
