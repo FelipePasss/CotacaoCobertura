@@ -1,0 +1,3565 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Coberturas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+:root {
+  --primary-color: rgba(11, 11, 124, 0.897);
+  --primary-dark: rgb(9, 9, 100);
+  --secondary-color: #f0f8ff;
+  --border-color: #4169E1;
+  --text-color: #555;
+  --background-color: #f8f8f8;
+  --card-bg: white;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --finalized-color: #6c757d;
+  --canceled-color: #dc3545;
+  --admin-color: #6610f2;
+  --consultant-color: #17a2b8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.separator {
+  margin: 20px 0 10px;
+  font-weight: bold;
+  color: #888;
+}
+
+.btn-consultor {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 250px;
+}
+
+.btn-consultor:hover {
+  background-color: #138496;
+}
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 95vw;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 98vw;
+  }
+}
+
+/* Envolve toda a página de login */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Área principal centralizada */
+.login-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  text-align: center;
+  animation: fadeInUp 0.8s ease;
+}
+      .footer {
+      background-color: var(--primary-dark);
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      width: 100%;
+      margin-top: auto;
+    }
+
+
+    .login-container h1 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      position: relative;
+    }
+
+    .login-container h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background: var(--primary-color);
+      border-radius: 3px;
+    }
+
+.card {
+  background: var(--card-bg);
+  padding: 20px 30px 30px;
+  margin: 0 auto 30px;
+  max-width: 700px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInUp 0.8s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  animation: fadeInDown 0.8s ease;
+  position: relative;
+}
+
+.logo {
+  max-width: 100%;
+  height: auto;
+  max-height: 80px;
+  margin-bottom: 10px;
+  transition: transform 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.03);
+}
+
+h1 {
+  color: var(--primary-color);
+  margin: 0;
+  font-size: 24px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  position: relative;
+  padding-bottom: 10px;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: var(--primary-color);
+  border-radius: 3px;
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(11, 11, 124, 0.2);
+  outline: none;
+  background: white;
+}
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+  text-align: center;
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+button {
+  padding: 14px 25px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 220px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.result {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: var(--secondary-color);
+  border-radius: 12px;
+  border-left: 5px solid var(--border-color);
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+  width: 100%;
+}
+
+.result h3 {
+  color: var(--primary-color);
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 20px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.result h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background: var(--border-color);
+}
+
+.result p {
+  font-size: 16px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.result span {
+  font-weight: bold;
+  color: var(--primary-dark);
+}
+
+.valor-final {
+  font-size: 20px;
+  color: var(--primary-color);
+  background: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  margin: 15px auto;
+  display: inline-block;
+  border: 2px dashed var(--border-color);
+  font-weight: bold;
+}
+
+.btn-pdf {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+.btn-success {
+  margin-top: 15px;
+  background: #28a745;
+}
+
+.btn-success:hover {
+  background: #218838;
+}
+
+.currency {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.user-info {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  gap: 8px;
+  max-width: calc(100% - 30px);
+}
+
+.user-info-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.user-role {
+  font-size: 12px;
+  color: var(--text-color);
+  margin-top: 2px;
+}
+
+.user-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.logout-btn {
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.logout-btn:hover {
+  background: #520dc2;
+  transform: translateY(-2px);
+}
+
+.admin-btn {
+  background: rgb(5, 133, 219);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-btn:hover {
+  background: #520dc2;
+  transform: translateY(-2px);
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--text-color);
+  width: 100%;
+  text-align: center;
+}
+
+.login-form input {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s;
+  margin: 0 auto;
+  display: block;
+}
+
+.login-form input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(11, 11, 124, 0.2);
+  outline: none;
+}
+
+.login-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 14px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin: 0 auto;
+  display: block;
+}
+
+.login-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
+
+.consultant-btn {
+  background-color: var(--consultant-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 14px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 15px;
+}
+
+.consultant-btn:hover {
+  background-color: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
+
+.full-btn {
+  width: 100px;
+  max-width: 90%;
+  margin: 20px auto;
+}
+
+#backToLoginBtn {
+  margin-top: 15px;
+}
+
+.password-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  border-radius: 5px 0 0 5px;
+}
+
+.toggle-password {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-left: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px; 
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 10px 25px;
+  margin: 0 8px 10px;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: auto;
+}
+
+.tab-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.tab-btn:hover:not(.active) {
+  background-color: #d0d0d0;
+}
+
+.requests-container {
+  display: none;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 15px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  animation: fadeIn 0.5s ease;
+  min-height: calc(100vh - 150px);
+}
+
+.finalized-container {
+  background-color: #f8f9fa;
+}
+
+.canceled-container {
+  background-color: #fff8f8;
+}
+
+.requests-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.requests-header h2 {
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.export-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.export-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.export-btn:hover {
+  background: #218838;
+  transform: translateY(-2px);
+}
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  background: white;
+  border-radius: 8px;
+}
+
+.requests-table {
+  width: 100%;
+  min-width: 2000px;
+  font-size: 14px;
+  border-collapse: collapse;
+}
+
+.requests-table th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+  padding: 12px 8px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+
+.requests-table th:hover {
+  background-color: var(--primary-dark);
+}
+
+.requests-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  font-size: 13px;
+}
+
+.requests-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.requests-table tr:hover {
+  background-color: #e3f2fd;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: var(--warning-color);
+  color: #333;
+}
+
+.status-signed {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.status-finalized {
+  background-color: var(--finalized-color);
+  color: white;
+}
+
+.faturar-container {
+  background-color: #f9f9f9;
+}
+
+.faturar-header h2 {
+  color: var(--primary-color);
+}
+
+
+.status-canceled {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 5px;
+  min-width: 120px;
+}
+
+.action-row {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.action-btn {
+  min-width: 80px;
+  padding: 5px 8px !important;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0 !important;
+  padding: 5px 8px;
+  font-size: 12px;
+  margin: 2px;
+  width: auto;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.back-btn {
+  background-color: #6c757d;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.dashboard-container {
+  display: none;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  animation: fadeIn 0.5s ease;
+  min-height: calc(100vh - 150px);
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.dashboard-header h2 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.stat-label {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.chart-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.users-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.close-modal {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #555;
+}
+
+.user-list {
+  margin-top: 20px;
+}
+
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.user-email {
+  font-weight: bold;
+  min-width: 200px;
+}
+
+.user-actions input {
+  padding: 8px;
+  width: 150px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.user-role {
+  min-width: 120px;
+}
+
+.user-actions button {
+  padding: 8px 12px;
+  width: auto;
+  margin-top: 0;
+  font-size: 14px;
+}
+
+.role-select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.filter-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 150px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Garantir que o Fundo.png está correto no template do PDF */
+#pdf-template {
+  display:none;
+  width: 800px;
+  height: 1130px;
+  position: relative;
+  background: url('./img/Fundo.png') no-repeat center center !important;
+  background-size: cover;
+  padding: 60px 40px;
+  color: #222;
+  font-family: Arial, sans-serif;
+}
+
+#desconto:disabled {
+  background-color: transparent;
+  border: 1px solid transparent;
+  cursor: default;
+  color: inherit;
+}
+
+.pdf-generating {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  visibility: visible;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+  .user-info {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    justify-content: space-between;
+    max-width: none;
+    padding: 8px 15px;
+  }
+  
+  .user-info-content {
+    align-items: flex-start;
+    max-width: calc(100% - 90px);
+  }
+  
+  .user-name {
+    max-width: 100%;
+  }
+  
+  .user-actions {
+    flex-shrink: 0;
+  }
+  
+  .logout-btn, .admin-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  
+  #mainSection {
+    padding-top: 80px;
+    padding-bottom: 60px;
+  }
+  
+  .footer {
+    padding: 15px 0;
+  }
+  
+  .footer p {
+    font-size: 12px;
+  }
+  
+  .table-container {
+    border-radius: 0;
+  }
+  
+  .requests-table {
+    font-size: 12px;
+  }
+  
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-input {
+    width: 100%;
+  }
+}
+
+.finalized-header {
+  background-color: #e9ecef;
+}
+
+.canceled-header {
+  background-color: #fce8e8;
+}
+
+.finalized-header h2 {
+  color: var(--finalized-color);
+}
+
+.canceled-header h2 {
+  color: var(--danger-color);
+}
+
+.finalized-table th {
+  background-color: var(--finalized-color);
+}
+
+.canceled-table th {
+  background-color: var(--danger-color);
+}
+    </style>
+    <!-- Bibliotecas para geração de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<div id="loginSection" class="login-wrapper">
+  <div class="login-content">
+    <div class="login-container">
+      <img class="logo" src="https://i.postimg.cc/qRJwhVjQ/GSCIA-FACILITIES-HORIZONTAL.png" alt="Grupo Solução" />
+      <h1>Login</h1>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">E-mail</label>
+          <input id="loginEmail" type="email" placeholder="Digite seu e-mail" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Senha</label>
+          <input id="loginPassword" type="password" placeholder="Digite sua senha" />
+        </div>
+        <button type="submit">Entrar</button>
+      </form>
+
+      <div class="separator">ou</div>
+
+      <button class="btn-consultor" id="consultantBtn">👤 Acessar como Consultor</button>
+      <form id="consultantForm" class="login-form" style="display: none; margin-top: 10px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+          <div class="form-group" style="text-align:center; margin-bottom:0;">
+            <label for="consultantName">Nome do Consultor</label>
+            <input type="text" id="consultantName" placeholder="Seu nome completo" required style="max-width:300px; margin:0 auto; display:block;">
+          </div>
+          <button type="button" id="confirmConsultantBtn" class="consultant-btn" style="width:220px;">
+            <i class="fas fa-check"></i> Confirmar
+          </button>
+          <button type="button" id="backToLoginBtn" class="login-btn" style="background: #6c757d; width:220px;">
+            <i class="fas fa-arrow-left"></i> Voltar para Login
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2025 Grupo Solução - Todos os direitos reservados.</p>
+  </footer>
+</div>
+</div>
+
+<div id="mainSection" class="container" style="display: none;">
+  <div class="user-info">
+    <div class="user-info-content">
+      <div class="user-name" id="userName">Usuário</div>
+      <div class="user-role" id="userRole"></div>
+    </div>
+    
+    <div class="user-actions">
+      <button id="manageUsersBtn" class="admin-btn" style="display: none;">
+        <i class="fas fa-users-cog"></i> Admin
+      </button>
+      <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </div>
+  
+  <div class="tabs">
+    <button class="tab-btn active" id="calcTab">Cotação</button>
+    <button class="tab-btn" id="requestsTab">Quadro de Solicitações</button>
+    <button class="tab-btn" id="finalizedTab">Finalizados</button>
+    <button class="tab-btn" id="canceledTab">Cancelados</button>
+    <button class="tab-btn" id="dashboardTab">Dashboard</button>
+    <button class="tab-btn" id="faturarTab" style="display:none;">A Faturar</button>
+  </div>
+  
+  <div id="calculatorSection">
+    <div class="card">
+      <div class="header">
+        <img src="https://i.postimg.cc/qRJwhVjQ/GSCIA-FACILITIES-HORIZONTAL.png" alt="Logo Grupo Solução" class="logo">
+        <h1>Cotações De Coberturas e Diárias</h1>
+      </div>
+      
+      <form id="calcForm">
+        <div class="form-group">
+          <label for="condominio">Condomínio <span style="color: red;">*</span></label>
+          <input type="text" id="condominio" name="condominio" placeholder="Nome do condomínio" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="data_inicio">Data Início <span style="color: red;">*</span></label>
+          <input type="date" id="data_inicio" name="data_inicio" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="data_fim">Data Fim <span style="color: red;">*</span></label>
+          <input type="date" id="data_fim" name="data_fim" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="Quantidade De Colaboradores">Colaboradores <span style="color: red;">*</span></label>
+          <input type="text" id="Quantidade De Colaboradores" name="Quantidade De Colaboradores" placeholder="Ex.:01" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="Solicitante">Solicitante <span style="color: red;">*</span></label>
+          <input type="text" id="Solicitante" name="Solicitante" placeholder="Ex.:Quem está realizando a cotação" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="E-mail">E-mail <span style="color: red;">*</span></label>
+          <input type="email" id="E-mail" name="E-mail" placeholder="Ex.:E-mail De Cobrança para retorno" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="Observações">Observações</label>
+          <input type="text" id="Observações" name="Observações" placeholder="Ex.:Obs">
+        </div>
+        
+        <div class="form-group">
+          <label for="tipo_faturamento">Tipo De Faturamento <span style="color: red;">*</span></label>
+          <select id="tipo_faturamento" name="tipo_faturamento" required>
+            <option value="">Selecione uma opção</option>
+            <option value="Terceirizado">Terceirizado</option>
+            <option value="Orgânico">Orgânico</option>
+            <option value="Linha Verde">Linha Verde</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="quantidade_dias">Quantidade De Dias</label>
+          <input type="number" id="quantidade_dias" name="quantidade_dias" placeholder="Ex.: 30" min="1" readonly>
+          <small id="alerta-dias" style="color: red; display: none;">
+            ⚠️ Atenção: Para contratos com menos de 11 dias, os valores diários são diferenciados.
+          </small>
+        </div>
+        
+        <div class="form-group">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <label for="cargo">Cargo</label>
+            <small>
+              <a href="#" id="ajudaCargo" style="color: var(--primary-color);">
+                <i class="fas fa-question-circle"></i> Não encontrou o cargo?
+              </a>
+            </small>
+          </div>
+          
+          <select id="cargo" name="cargo" required>
+            <option value="" disabled selected>Selecione um cargo</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Porteiro Diurno">Porteiro Diurno</option>
+            <option value="Porteiro Noturno">Porteiro Noturno</option>
+            <option value="Vigia Diurno">Vigia Diurno</option>
+            <option value="Vigia Noturno">Vigia Noturno</option>
+            <option value="Encarregado De Manutenção">Encarregado De Manutenção</option>
+            <option value="Supervisor Operacional Diurno">Supervisor Operacional Diurno</option>
+            <option value="Supervisor Operacional Noturno">Supervisor Operacional Noturno</option>
+            <option value="Zelador">Zelador</option>
+            <option value="Jardineiro">Jardineiro</option>
+            <option value="Faxineiro">Faxineiro</option>
+            <option value="Bombeiro Hidráulico">Bombeiro Hidráulico</option>
+            <option value="Eletricista">Eletricista</option>
+            <option value="Pintor">Pintor</option>
+            <option value="Pedreiro">Pedreiro</option>
+            <option value="Auxiliar De Serviços Gerais">Auxiliar De Serviços Gerais</option>
+            <option value="Recepcionista">Recepcionista</option>
+            <option value="Controlador De Acesso">Controlador De Acesso</option>
+            <option value="Auxiliar De Limpeza">Auxiliar De Limpeza</option>
+          </select>
+        </div>
+        
+      <div style="display: flex; justify-content: center;">
+        <button type="submit" style="margin: 0 auto; display: block;">Calcular Cotação</button>
+        
+      </div>
+      </form>
+
+      <div id="result" class="result" style="display: none;"></div>
+    </div>
+  </div>
+  
+  <div id="requestsContainer" class="requests-container">
+    <div class="requests-header" style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+      <h2 style="margin: 0; text-align: center;">Quadro de Solicitações</h2>
+      <div style="display: flex; justify-content: flex-end; width: 100%; margin-top: 10px;">
+        <div style="display: flex; gap: 10px; align-items: center; background-color: white; padding: 10px 0;">
+          <button id="exportRequestsBtn" class="export-btn" style="width: 180px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-file-excel"></i>&nbsp;Exportar Excel
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <!-- Gráficos de evolução por status -->
+      <div id="status-charts" style="width:100%; background:transparent; margin-bottom:30px; display:flex; flex-wrap:wrap; gap:30px; justify-content:center; align-items:center;">
+      </div>
+      <table class="requests-table" id="requestsTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0)" data-column="0">ID <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(1)" data-column="1">Condomínio <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(2)" data-column="2">Data Início <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(3)" data-column="3">Data Fim <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(4)" data-column="4">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(5)" data-column="5">Solicitante <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(6)" data-column="6">E-mail <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(7)" data-column="7">Observações <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(8)" data-column="8">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(9)" data-column="9">Dias <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(10)" data-column="10">Cargo <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(11)" data-column="11">Valor <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(12)" data-column="12">Desconto <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(13)" data-column="13">Valor Atualizado <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(14)" data-column="14">Data Criação <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(15)" data-column="15">Status <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(17)" data-column="17">Realizado <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(19)" data-column="18">Ações <i class="fas fa-sort filter-icon"></i></th>
+          </tr>
+        </thead>
+        <tbody id="requestsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+    <style>
+      /* Aplica zoom de 100% na tela de login e 80% nas demais */
+      #loginSection {
+        zoom: 1.0;
+              }
+        #calculatorSection,
+        #requestsContainer,
+        #finalizedContainer,
+        #canceledContainer,
+        #dashboardContainer,
+        #faturarContainer {
+          zoom: 0.8;
+        }
+      /* Footer fixo no final da tela */
+      .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: #16176c;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0 6px 0;
+        box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+        z-index: 9999;
+        margin: 0;
+        border: none;
+        overflow-x: hidden;
+      }
+      
+    </style>
+  
+  <div id="finalizedContainer" class="requests-container finalized-container">
+    <div class="requests-header finalized-header">
+      <h2 style="text-align:center; width:100%;">Finalizados</h2>
+      <div class="export-controls">
+        <input type="date" id="filterFinalizedDate" class="filter-input" placeholder="Data Finalização">
+        <input type="text" id="searchFinalized" class="filter-input" placeholder="Buscar...">
+        <button id="exportFinalizedBtn" class="export-btn">
+          <i class="fas fa-file-excel"></i> Exportar Excel
+        </button>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="requests-table finalized-table" id="finalizedTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0)" data-column="0">ID <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(1)" data-column="1">Condomínio <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(2)" data-column="2">Data Início <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(3)" data-column="3">Data Fim <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(4)" data-column="4">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(5)" data-column="5">Solicitante <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(6)" data-column="6">E-mail <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(7)" data-column="7">Observações <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(8)" data-column="8">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(9)" data-column="9">Dias <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(10)" data-column="10">Cargo <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(11)" data-column="11">Valor <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(12)" data-column="12">Data Criação <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(13)" data-column="13">Data Finalização <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(14)" data-column="14">Desconto <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(15)" data-column="15">Ações <i class="fas fa-sort filter-icon"></i></th>
+          </tr>
+        </thead>
+        <tbody id="finalizedTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div id="canceledContainer" class="requests-container canceled-container">
+    <div class="requests-header canceled-header">
+      <h2 style="text-align:center; width:100%;">Cancelados</h2>
+      <div class="export-controls">
+        <input type="text" id="searchCanceled" class="filter-input" placeholder="Buscar...">
+        <button id="exportCanceledBtn" class="export-btn">
+          <i class="fas fa-file-excel"></i> Exportar Excel
+        </button>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="requests-table canceled-table" id="canceledTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0)" data-column="0">ID <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(1)" data-column="1">Condomínio <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(2)" data-column="2">Data Início <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(3)" data-column="3">Data Fim <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(4)" data-column="4">Colaboradores <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(5)" data-column="5">Solicitante <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(6)" data-column="6">E-mail <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(7)" data-column="7">Observações <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(8)" data-column="8">Tipo Faturamento <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(9)" data-column="9">Dias <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(10)" data-column="10">Cargo <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(11)" data-column="11">Valor <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(12)" data-column="12">Data Criação <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(13)" data-column="13">Data Cancelamento <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(14)" data-column="14">Motivo <i class="fas fa-sort filter-icon"></i></th>
+            <th onclick="sortTable(15)" data-column="15">Ações <i class="fas fa-sort filter-icon"></i></th>
+          </tr>
+        </thead>
+        <tbody id="canceledTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div id="dashboardContainer" class="dashboard-container">
+    <div class="dashboard-header">
+      <h2>Dashboard Gerencial</h2>
+      <p>Visão geral do sistema de cotações</p>
+    </div>
+    
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <h3>Total de Cotações</h3>
+        <div class="stat-value" id="totalCotacoes">0</div>
+        <div class="stat-label">Este mês</div>
+      </div>
+      <div class="stat-card">
+        <h3>Aprovadas</h3>
+        <div class="stat-value" id="cotacoesAprovadas">0</div>
+        <div class="stat-label">Taxa de aprovação</div>
+      </div>
+      <div class="stat-card">
+        <h3>Canceladas</h3>
+        <div class="stat-value" id="cotacoesCanceladas">0</div>
+        <div class="stat-label">Taxa de cancelamento</div>
+      </div>
+      <div class="stat-card">
+        <h3>Em andamento</h3>
+        <div class="stat-value" id="cotacoesAndamento">0%</div>
+        <div class="stat-label">Taxa em andamento</div>
+      </div>
+      <div class="stat-card">
+        <h3>Valor Total</h3>
+        <div class="stat-value" id="valorTotal">R$ 0,00</div>
+      </div>
+    </div>
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <div style="margin-top:18px; text-align:center;">
+          <div style="margin-bottom:8px;"><strong>Pendente:</strong> <span id="qtdPendente">0</span></div>
+          <div style="margin-bottom:8px;"><strong>Finalizada:</strong> <span id="qtdFinalizada">0</span></div>
+          <div><strong>Cancelada:</strong> <span id="qtdCancelada">0</span></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <h3>Valor</h3>
+        <div class="stat-value" id="valorAprovada">R$ 0,00</div>
+        <div class="stat-label">Valor de aprovação</div>
+      </div>
+      <div class="stat-card">
+        <h3>Valor</h3>
+        <div class="stat-value" id="valorCancelada">R$ 0,00</div>
+        <div class="stat-label">Valor de cancelamento</div>
+      </div>
+            <div class="stat-card">
+        <h3>Valor</h3>
+        <div class="stat-value" id="valorAndamento">R$ 0,00</div>
+        <div class="stat-label">Valor em andamento</div>
+      </div>
+    </div>
+    
+    <div class="chart-container">
+<h3 style="text-align: center; margin-bottom: 15px;">Cotações</h3>
+
+      <div class="table-container" style="margin-top:0;">
+        <table class="requests-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Condomínio</th>
+              <th>Data Início</th>
+              <th>Data Fim</th>
+              <th>Colaboradores</th>
+              <th>Solicitante</th>
+              <th>E-mail</th>
+              <th>Observações</th>
+              <th>Tipo Faturamento</th>
+              <th>Dias</th>
+              <th>Cargo</th>
+              <th>Valor</th>
+              <th>Desconto</th>
+              <th>Valor Atualizado</th>
+              <th>Data Criação</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="dashboardStatusTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div id="usersModal" class="users-modal">
+    <div class="modal-content">
+  <button class="close-modal" onclick="closeUsersModal()" style="font-size: 20px; padding: 4px 10px;">&times;</button>
+    <h2>Gerenciamento de Usuários</h2>
+    <div style="display: flex; justify-content: center; align-items: flex-end; gap: 32px; margin-bottom: 30px;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="newUserEmail" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Novo Usuário</label>
+        <input type="email" id="newUserEmail" placeholder="E-mail do usuário" style="text-align:center;width:220px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;">
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="newUserPassword" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Senha</label>
+        <input type="password" id="newUserPassword" placeholder="Senha" style="text-align:center;width:180px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;">
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="newUserRole" style="display:block;text-align:center;font-size:18px;margin-bottom:8px;">Cargo</label>
+        <select id="newUserRole" class="role-select" style="text-align:center;width:180px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #dbeafe;background:#eaf3ff;">
+          <option value="consultant">Consultor</option>
+          <option value="admin">Administrador</option>
+          <option value="finance">Financeiro</option>
+          <option value="operations">Operacional</option>
+        </select>
+      </div>
+    </div>
+    
+    <button onclick="addUser()" class="btn-success">Adicionar Usuário</button>
+    
+    <div class="user-list" id="usersList"></div>
+  </div>
+</div>
+
+<!-- Remove o template PDF da visualização das telas, deixa oculto -->
+
+<div id="pdf-template" style="display:none;width:800px;height:1130px;position:relative;background:#fff;overflow:hidden;font-family:Arial,sans-serif;">
+  <img src="img/Fundo.png" alt="Fundo" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;object-fit:cover;pointer-events:none;user-select:none;" />
+  <div class="content-wrapper" style="position:relative;z-index:1;margin-top:100px;padding:40px;">
+    <p><strong>Ao Condomínio <span id="pdf-condominio"></span></strong></p>
+    <p style="text-align:left;">Prezado(a),</p>
+    <p style="text-align:justify;">Com satisfação apresentamos a proposta do nosso plano de cobertura terceirizada, serviço que foi criado pelo Grupo Solução &amp; Cia para atender as necessidades dos nossos clientes que possuem seu quadro de colaboradores contratados pela modalidade orgânica.</p>
+    <p style="text-align:justify;">O programa constitui no fornecimento de mão de obra especializada para a cobertura do período solicitado pelo condomínio.</p>
+    <p>Facilidades e Benefícios do plano coberturas terceirizada:</p>
+    <ul style="text-align:justify;padding-left:20px;">
+      <li>Mão de obra especializada e sem vínculos empregatícios;</li>
+      <li>Tranquilidade com a exclusão da necessidade da contratação de novos colaboradores;</li>
+      <li>Segurança na operação da rotina do empreendimento, tendo em vista treinamento prévio;</li>
+      <li>Garantia de 100% na cobertura dos serviços contratados;</li>
+      <li>Possibilidade de substituição do colaborador sem custos para o condomínio;</li>
+      <li>Economia na aquisição de fardamentos.</li>
+    </ul>
+    <p style="text-align:justify;">Com a programação estabelecida, teremos a cobertura de <strong><span id="pdf-quantidade"></span> <span id="pdf-cargo"></span></strong> distribuída conforme quadro a seguir:</p>
+    <table style="width:100%;border-collapse:collapse;margin:20px 0;">
+      <tr>
+        <th style="border:1px solid #000;padding:8px;text-align:center;">FUNÇÃO</th>
+        <th style="border:1px solid #000;padding:8px;text-align:center;">PERÍODO</th>
+      </tr>
+      <tr>
+        <td style="border:1px solid #000;padding:8px;"><span id="pdf-funcao"></span></td>
+        <td style="border:1px solid #000;padding:8px;"><span id="pdf-periodo"></span></td>
+      </tr>
+    </table>
+    <p style="text-align:justify;">O valor da prestação de serviço será de <strong><span id="pdf-valor"></span></strong>.</p>
+    <p style="text-align:justify;">O valor da cobertura contempla custos com salários, encargos, fardamentos e benefícios.</p>
+    <p style="text-align:justify;">De acordo com a proposta.</p>
+    <p style="text-align:center;margin-bottom:30px;">Salvador-BA, <span id="pdf-data"></span></p>
+    <div style="margin-top:50px;display:flex;justify-content:space-between;">
+      <div>
+        <div style="border-bottom:1px solid #000;width:200px;margin-top:20px;"></div>
+        <p>Grupo Solução &amp; Cia</p>
+      </div>
+      <div>
+        <div style="border-bottom:1px solid #000;width:200px;margin-top:20px;"></div>
+        <p>Condomínio <span id="pdf-condominio-final"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="uploadPdfModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+  <div style="background: white; padding: 20px; border-radius: 8px; width: 400px;">
+    <h3>Enviar PDF Assinado</h3>
+    <input type="file" id="pdfAssinadoInput" accept=".pdf" style="margin: 15px 0;">
+    <div style="display: flex; justify-content: space-between;">
+      <button onclick="confirmarUploadPdf()" style="background: #4CAF50; color: white; padding: 8px 15px; border: none; border-radius: 4px;">✔ Confirmar</button>
+      <button onclick="cancelarUploadPdf()" style="background: #f44336; color: white; padding: 8px 15px; border: none; border-radius: 4px;">✘ Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================ VARIÁVEIS GLOBAIS ================
+let currentUser = null;
+let requests = JSON.parse(localStorage.getItem('requests')) || [];
+// Limpa pdfAssinado base64 dos requests para liberar espaço no localStorage
+let altered = false;
+requests.forEach(req => {
+  if (req.pdfAssinado && typeof req.pdfAssinado === 'string' && req.pdfAssinado.startsWith('data:application/pdf')) {
+    req.pdfAssinado = true;
+    altered = true;
+  }
+});
+if (altered) {
+  try {
+    localStorage.setItem('requests', JSON.stringify(requests));
+  } catch (e) {
+    console.warn('Não foi possível atualizar localStorage após limpeza de pdfAssinado:', e);
+  }
+}
+let users = JSON.parse(localStorage.getItem('users')) || [
+  { email: 'luidilsantos@gscia.com.br', nome: "Luídil Santos", password: 'admin123', role: 'admin' },
+  { email: 'rht03@gscia.com.br', nome: "RH Terceiro", password: 'rht123', role: 'finance' },
+  { email: 'zildiannerocha@gscia.com.br', nome: "Zildianne Rocha", password: 'rht123', role: 'finance' },
+  { email: 'rht50@gscia.com.br', nome: "RH Cinquenta", password: 'admin123', role: 'operations' },
+  { email: 'atendimento@gscia.com.br', nome: "Atendimento", password: 'oper123', role: 'operations' },
+  { email: 'coberturas@gscia.com.br', nome: "Coberturas", password: 'oper123', role: 'operations' },
+  { email: 'rht55@gscia.com.br', nome: "RH Cinquenta e Cinco", password: 'oper123', role: 'operations' }
+];
+
+const cargoValues = {
+  'Administrador': { 'Terceirizado': 250, 'Orgânico': 200, 'Linha Verde': 180 },
+  'Porteiro Diurno': { 'Terceirizado': 200, 'Orgânico': 160, 'Linha Verde': 140 },
+  'Porteiro Noturno': { 'Terceirizado': 220, 'Orgânico': 180, 'Linha Verde': 160 },
+  'Vigia Diurno': { 'Terceirizado': 180, 'Orgânico': 140, 'Linha Verde': 120 },
+  'Vigia Noturno': { 'Terceirizado': 200, 'Orgânico': 160, 'Linha Verde': 140 },
+  'Encarregado De Manutenção': { 'Terceirizado': 280, 'Orgânico': 230, 'Linha Verde': 200 },
+  'Supervisor Operacional Diurno': { 'Terceirizado': 300, 'Orgânico': 250, 'Linha Verde': 220 },
+  'Supervisor Operacional Noturno': { 'Terceirizado': 320, 'Orgânico': 270, 'Linha Verde': 240 },
+  'Zelador': { 'Terceirizado': 160, 'Orgânico': 120, 'Linha Verde': 100 },
+  'Jardineiro': { 'Terceirizado': 150, 'Orgânico': 110, 'Linha Verde': 90 },
+  'Faxineiro': { 'Terceirizado': 140, 'Orgânico': 100, 'Linha Verde': 80 },
+  'Bombeiro Hidráulico': { 'Terceirizado': 200, 'Orgânico': 160, 'Linha Verde': 140 },
+  'Eletricista': { 'Terceirizado': 220, 'Orgânico': 180, 'Linha Verde': 160 },
+  'Pintor': { 'Terceirizado': 180, 'Orgânico': 140, 'Linha Verde': 120 },
+  'Pedreiro': { 'Terceirizado': 200, 'Orgânico': 160, 'Linha Verde': 140 },
+  'Auxiliar De Serviços Gerais': { 'Terceirizado': 130, 'Orgânico': 90, 'Linha Verde': 70 },
+  'Recepcionista': { 'Terceirizado': 170, 'Orgânico': 130, 'Linha Verde': 110 },
+  'Controlador De Acesso': { 'Terceirizado': 160, 'Orgânico': 120, 'Linha Verde': 100 },
+  'Auxiliar De Limpeza': { 'Terceirizado': 120, 'Orgânico': 80, 'Linha Verde': 60 }
+};
+
+
+// Função para atualizar os contadores do dashboard
+function atualizarDashboardContadores() {
+  // Recupera as solicitações do localStorage
+  const requests = JSON.parse(localStorage.getItem('requests') || '[]');
+  // Pendente: status 'Pendente'
+  const qtdPendente = requests.filter(r => (r.status || '').toLowerCase() === 'pendente').length;
+  // Finalizada: status 'Finalizado'
+  const qtdFinalizada = requests.filter(r => {
+    const status = (r.status || '').toLowerCase();
+    return status === 'finalizado';
+  }).length;
+  // Cancelada: status 'Cancelado' ou 'Reprovado'
+  const qtdCancelada = requests.filter(r => {
+    const status = (r.status || '').toLowerCase();
+    return status === 'cancelado' || status === 'reprovado';
+  }).length;
+  // Atualiza os elementos do dashboard
+  if (document.getElementById('qtdPendente')) {
+    document.getElementById('qtdPendente').textContent = qtdPendente;
+  }
+  if (document.getElementById('qtdFinalizada')) {
+    document.getElementById('qtdFinalizada').textContent = qtdFinalizada;
+  }
+  if (document.getElementById('qtdCancelada')) {
+    document.getElementById('qtdCancelada').textContent = qtdCancelada;
+  }
+}
+
+
+  atualizarDashboardContadores();
+// ================ INICIALIZAÇÃO ================
+document.addEventListener('DOMContentLoaded', function() {
+  // Exibir aba A Faturar apenas para admin/finance
+  if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance')) {
+    document.getElementById('faturarTab').style.display = 'inline-block';
+    document.getElementById('faturarTab').addEventListener('click', function() {
+      switchTab('faturar');
+    });
+  } else {
+    document.getElementById('faturarTab').style.display = 'none';
+  }
+  // Adiciona aba A Faturar apenas para admin/finance
+  if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance')) {
+    const faturarTab = document.createElement('button');
+    faturarTab.id = 'faturarTab';
+    faturarTab.className = 'tab-btn';
+    faturarTab.textContent = 'A Faturar';
+    const dashboardTab = document.getElementById('dashboardTab');
+    dashboardTab.parentNode.insertBefore(faturarTab, dashboardTab.nextSibling);
+    faturarTab.addEventListener('click', function() {
+      switchTab('faturar');
+    });
+  }
+  // Verificar login de usuário regular
+  if (sessionStorage.getItem('loggedUser')) {
+    const userEmail = sessionStorage.getItem('loggedUser');
+    showMainSection(userEmail);
+    return;
+  }
+
+  // Verificar acesso como consultor
+  if (sessionStorage.getItem('consultantName')) {
+    const consultantName = sessionStorage.getItem('consultantName');
+    showMainSectionAsConsultant(consultantName);
+  }
+
+  // Configurar datas mínimas
+  setMinDate();
+  
+  // Event listeners para datas
+  document.getElementById('data_inicio').addEventListener('change', function() {
+    const startDate = this.value;
+    const endInput = document.getElementById('data_fim');
+    if (startDate) {
+      endInput.setAttribute('min', startDate);
+      if (endInput.value && endInput.value < startDate) {
+        endInput.value = startDate;
+      }
+    }
+    calculateDays();
+  });
+
+  document.getElementById('data_fim').addEventListener('change', calculateDays);
+  
+  // Event listeners para login
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+      currentUser = user;
+      showMainSection();
+    } else {
+      alert('Credenciais inválidas!');
+    }
+  });
+
+  // Acesso como consultor
+  document.getElementById('consultantBtn').addEventListener('click', function() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('consultantForm').style.display = 'block';
+  });
+
+  document.getElementById('backToLoginBtn').addEventListener('click', function() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('consultantForm').style.display = 'none';
+    document.getElementById('consultantForm').reset();
+  });
+
+  document.getElementById('confirmConsultantBtn').addEventListener('click', function() {
+    const name = document.getElementById('consultantName').value.trim();
+    if (name) {
+      currentUser = { name: name, role: 'consultor', isConsultant: true };
+      updateUserDisplay();
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('consultantForm').style.display = 'none';
+      document.getElementById('mainSection').style.display = 'block';
+      document.getElementById('consultantForm').reset();
+      switchTab('calculator');
+    } else {
+      alert('Por favor, insira seu nome!');
+    }
+  });
+
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    currentUser = null;
+    document.getElementById('loginSection').style.display = 'block';
+    document.getElementById('mainSection').style.display = 'none';
+    document.getElementById('loginForm').reset();
+    document.getElementById('consultantForm').reset();
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('consultantForm').style.display = 'none';
+  });
+
+  // Sistema de abas
+  document.getElementById('calcTab').addEventListener('click', function() {
+    switchTab('calculator');
+  });
+
+  document.getElementById('requestsTab').addEventListener('click', function() {
+    switchTab('requests');
+  });
+
+  document.getElementById('finalizedTab').addEventListener('click', function() {
+    switchTab('finalized');
+  });
+
+  document.getElementById('canceledTab').addEventListener('click', function() {
+    switchTab('canceled');
+  });
+
+  document.getElementById('dashboardTab').addEventListener('click', function() {
+    switchTab('dashboard');
+  });
+
+  // Formulário de cotação
+  document.getElementById('calcForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    // Validação dos campos obrigatórios
+    if (!data.condominio || !data.data_inicio || !data.data_fim ||
+        !data['Quantidade De Colaboradores'] || !data.Solicitante ||
+        !data['E-mail'] || !data.tipo_faturamento || !data.cargo) {
+      alert('Por favor, preencha todos os campos obrigatórios!');
+      return;
+    }
+
+    const cargo = data.cargo;
+    const tipoFaturamento = data.tipo_faturamento;
+    const dias = parseInt(data.quantidade_dias);
+    const colaboradores = parseInt(data['Quantidade De Colaboradores']);
+    const desconto = parseFloat(data.desconto) || 0;
+
+    if (!cargoValues[cargo] || !cargoValues[cargo][tipoFaturamento]) {
+      alert('Cargo ou tipo de faturamento inválido!');
+      return;
+    }
+
+    let valorDiario = cargoValues[cargo][tipoFaturamento];
+
+    // Aplicar diferenciação para menos de 11 dias
+    if (dias < 11) {
+      valorDiario *= 1.2; // Acréscimo de 20%
+    }
+
+    const valorTotal = valorDiario * dias * colaboradores;
+
+    // Criar objeto da cotação
+    const cotacao = {
+      id: Date.now(),
+      ...data,
+      quantidade_dias: dias,
+      valor_diario: valorDiario,
+      valor_total: valorTotal,
+      desconto: desconto,
+      data_criacao: new Date().toISOString(),
+      status: 'Pendente',
+      realizado: 'Pendente',
+      faturado: 'Pendente',
+      solicitante_sistema: currentUser.name || currentUser.email,
+      aprovacao_admin: 'Pendente',
+      aprovacao_financeiro: 'Pendente',
+      pdfAssinado: null
+    };
+
+    // Adicionar à lista de solicitações
+    requests.push(cotacao);
+    localStorage.setItem('requests', JSON.stringify(requests));
+
+    // Mostrar resultado
+    displayResult(cotacao);
+  });
+
+  document.getElementById('calcTab').click(); // Reforça permanência na aba
+
+
+  // Ajuda para cargo
+  document.getElementById('ajudaCargo').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('Se não encontrou o cargo desejado, entre em contato com o administrador do sistema para inclusão de novos cargos.');
+  });
+
+
+  // Gerenciamento de usuários
+  document.getElementById('manageUsersBtn').addEventListener('click', function() {
+    document.getElementById('usersModal').style.display = 'flex';
+    loadUsersList();
+  });
+  
+  // Exportar solicitações para Excel (todas visíveis, exceto canceladas/reprovadas)
+// Exportar Finalizados para Excel
+document.getElementById('exportFinalizedBtn').addEventListener('click', function() {
+  const finalizados = requests.filter(req => {
+    const status = (req.status || '').toLowerCase();
+    return status === 'finalizado';
+  });
+  if (finalizados.length === 0) {
+    alert('Nenhuma solicitação finalizada para exportar!');
+    return;
+  }
+  const data = finalizados.map(req => ({
+    ID: req.id,
+    Condomínio: req.condominio,
+    'Data Início': req.data_inicio,
+    'Data Fim': req.data_fim,
+    Colaboradores: req['Quantidade De Colaboradores'],
+    Solicitante: req.Solicitante,
+    Email: req['E-mail'],
+    Observações: req.Observações,
+    'Tipo Faturamento': req.tipo_faturamento,
+    Dias: req.quantidade_dias,
+    Cargo: req.cargo,
+    Valor: req.valor_total,
+    Desconto: req.desconto,
+    'Valor Atualizado': req.valor_total - (req.desconto || 0),
+    'Data Criação': req.data_criacao,
+    'Data Finalização': req.data_finalizacao || req.dataAssinatura,
+    Status: req.status
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Finalizados');
+  XLSX.writeFile(wb, 'Solicitacoes_Finalizadas.xlsx');
+});
+
+// Exportar Cancelados para Excel
+document.getElementById('exportCanceledBtn').addEventListener('click', function() {
+  const cancelados = requests.filter(req => {
+    const status = (req.status || '').toLowerCase();
+    return status === 'cancelado' || status === 'reprovado';
+  });
+  if (cancelados.length === 0) {
+    alert('Nenhuma solicitação cancelada para exportar!');
+    return;
+  }
+  const data = cancelados.map(req => ({
+    ID: req.id,
+    Condomínio: req.condominio,
+    'Data Início': req.data_inicio,
+    'Data Fim': req.data_fim,
+    Colaboradores: req['Quantidade De Colaboradores'],
+    Solicitante: req.Solicitante,
+    Email: req['E-mail'],
+    Observações: req.Observações,
+    'Tipo Faturamento': req.tipo_faturamento,
+    Dias: req.quantidade_dias,
+    Cargo: req.cargo,
+    Valor: req.valor_total,
+    'Data Criação': req.data_criacao,
+    'Data Cancelamento': req.data_cancelamento,
+    Motivo: req.motivo_cancelamento,
+    Status: req.status
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Cancelados');
+  XLSX.writeFile(wb, 'Solicitacoes_Canceladas.xlsx');
+});
+
+// Exportar A Faturar para Excel
+var exportFaturarBtn = document.getElementById('exportFaturarBtn');
+if (exportFaturarBtn) {
+  exportFaturarBtn.addEventListener('click', function() {
+    const aFaturar = requests.filter(req => {
+      const aprovadoComAssinado = req.status === 'Aprovado' && !!req.pdfAssinado && req.faturado === 'Pendente';
+      return aprovadoComAssinado;
+    });
+    if (aFaturar.length === 0) {
+      alert('Nenhuma solicitação a faturar para exportar!');
+      return;
+    }
+    const data = aFaturar.map(req => ({
+      ID: req.id,
+      Condomínio: req.condominio,
+      'Data Início': req.data_inicio,
+      'Data Fim': req.data_fim,
+      Colaboradores: req['Quantidade De Colaboradores'],
+      Solicitante: req.Solicitante,
+      Email: req['E-mail'],
+      Observações: req.Observações,
+      'Tipo Faturamento': req.tipo_faturamento,
+      Dias: req.quantidade_dias,
+      Cargo: req.cargo,
+      Valor: req.valor_total,
+      Desconto: req.desconto,
+      'Valor Atualizado': req.valor_total - (req.desconto || 0),
+      'Data Criação': req.data_criacao,
+      Status: req.status
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'A Faturar');
+    XLSX.writeFile(wb, 'Solicitacoes_A_Faturar.xlsx');
+  });
+}
+  document.getElementById('exportRequestsBtn').addEventListener('click', function() {
+    // Exporta apenas cotações com status permitido
+    const allowedStatus = ['pendente', 'aprovado', 'reprovado', 'finalizado', 'cancelado'];
+    const visibleRequests = requests.filter(req => {
+      const status = (req.status || '').toLowerCase();
+      return allowedStatus.includes(status);
+    });
+    if (visibleRequests.length === 0) {
+      alert('Nenhuma cotação para exportar!');
+      return;
+    }
+    // Monta os dados para exportação
+    const data = visibleRequests.map(req => ({
+      ID: req.id,
+      Condomínio: req.condominio,
+      'Data Início': req.data_inicio,
+      'Data Fim': req.data_fim,
+      Colaboradores: req['Quantidade De Colaboradores'],
+      Solicitante: req.Solicitante,
+      Email: req['E-mail'],
+      Observações: req.Observações,
+      'Tipo Faturamento': req.tipo_faturamento,
+      Dias: req.quantidade_dias,
+      Cargo: req.cargo,
+      Valor: req.valor_total,
+      Status: req.status
+    }));
+    // Usa XLSX para exportar
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Cotações');
+    XLSX.writeFile(wb, 'Cotacoes_Exportadas.xlsx');
+  });
+});
+
+// ================ FUNÇÕES UTILITÁRIAS ================
+function formatDate(dateString) {
+  if (!dateString) return '';
+  try {
+    if (typeof dateString === 'string' && dateString.includes('T')) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('pt-BR');
+    } else if (typeof dateString === 'string') {
+      const [year, month, day] = dateString.split('-');
+      return `${day}/${month}/${year}`;
+    } else if (dateString instanceof Date) {
+      return dateString.toLocaleDateString('pt-BR');
+    }
+    return '';
+  } catch (e) {
+    console.error('Erro ao formatar data:', e);
+    return '';
+  }
+}
+
+function formatDateTime(dateTimeString) {
+  if (!dateTimeString) return '';
+  try {
+    const date = new Date(dateTimeString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  } catch (e) {
+    console.error('Erro ao formatar data/hora:', e);
+    return dateTimeString;
+  }
+}
+
+function setMinDate() {
+  const today = new Date();
+  const minStartDate = new Date(today);
+  minStartDate.setDate(today.getDate() + 2);
+  const minStartDateStr = minStartDate.toISOString().split('T')[0];
+  document.getElementById('data_inicio').min = minStartDateStr;
+  document.getElementById('data_fim').min = minStartDateStr;
+}
+
+function calculateDays() {
+  const startDate = new Date(document.getElementById('data_inicio').value);
+  const endDate = new Date(document.getElementById('data_fim').value);
+  
+  if (startDate && endDate && endDate >= startDate) {
+    const adjustedStart = new Date(startDate.getTime() + startDate.getTimezoneOffset() * 60000);
+    const adjustedEnd = new Date(endDate.getTime() + endDate.getTimezoneOffset() * 60000);
+    const timeDiff = adjustedEnd - adjustedStart;
+    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
+    
+    document.getElementById('quantidade_dias').value = daysDiff;
+    const alertElement = document.getElementById('alerta-dias');
+    
+    if (daysDiff < 11) {
+      alertElement.style.display = 'block';
+    } else {
+      alertElement.style.display = 'none';
+    }
+  }
+}
+
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById('loginPassword');
+  const toggleIcon = document.querySelector('.toggle-password i');
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    toggleIcon.classList.remove('fa-eye');
+    toggleIcon.classList.add('fa-eye-slash');
+  } else {
+    passwordInput.type = 'password';
+    toggleIcon.classList.remove('fa-eye-slash');
+    toggleIcon.classList.add('fa-eye');
+  }
+}
+
+function getRoleLabel(role) {
+  const labels = {
+    'admin': 'Administrador',
+    'finance': 'Financeiro',
+    'operations': 'Operacional',
+    'consultant': 'Consultor'
+  };
+  return labels[role] || 'Usuário';
+}
+
+function getStatusLabel(status) {
+  const labels = {
+    'Pendente': 'Pendente',
+    'Aprovado': 'Aprovado',
+    'Reprovado': 'Reprovado',
+    'Finalizado': 'Finalizado',
+    'Cancelado': 'Cancelado',
+    // 'Assinado': 'Assinado' // removido
+  };
+  return labels[status] || status;
+}
+
+// ================ GERENCIAMENTO DE USUÁRIOS ================
+function closeUsersModal() {
+  document.getElementById('usersModal').style.display = 'none';
+}
+
+function loadUsersList() {
+  const usersList = document.getElementById('usersList');
+  usersList.innerHTML = '';
+  
+  users.forEach(user => {
+    const userDiv = document.createElement('div');
+    userDiv.className = 'user-item';
+    userDiv.innerHTML = `
+      <div class="user-email">${user.email}</div>
+      <div class="user-role">${getRoleLabel(user.role)}</div>
+      <div class="user-actions">
+        <input type="password" value="${user.password}" onchange="updateUserPassword('${user.email}', this.value)">
+        <select class="role-select" onchange="updateUserRole('${user.email}', this.value)">
+          <option value="consultant" ${user.role === 'consultant' ? 'selected' : ''}>Consultor</option>
+          <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Administrador</option>
+          <option value="finance" ${user.role === 'finance' ? 'selected' : ''}>Financeiro</option>
+          <option value="operations" ${user.role === 'operations' ? 'selected' : ''}>Operacional</option>
+        </select>
+        <button onclick="deleteUser('${user.email}')" class="btn-danger">Excluir</button>
+      </div>
+    `;
+    usersList.appendChild(userDiv);
+  });
+}
+
+function addUser() {
+  const email = document.getElementById('newUserEmail').value;
+  const password = document.getElementById('newUserPassword').value;
+  const role = document.getElementById('newUserRole').value;
+  
+  if (!email || !password) {
+    alert('Por favor, preencha todos os campos!');
+    return;
+  }
+  
+  if (users.find(u => u.email === email)) {
+    alert('Usuário já existe!');
+    return;
+  }
+  
+  users.push({ email, password, role });
+  localStorage.setItem('users', JSON.stringify(users));
+  
+  document.getElementById('newUserEmail').value = '';
+  document.getElementById('newUserPassword').value = '';
+  document.getElementById('newUserRole').value = 'consultant';
+  
+  loadUsersList();
+}
+
+function updateUserPassword(email, newPassword) {
+  const userIndex = users.findIndex(u => u.email === email);
+  if (userIndex !== -1) {
+    users[userIndex].password = newPassword;
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+}
+
+function updateUserRole(email, newRole) {
+  const userIndex = users.findIndex(u => u.email === email);
+  if (userIndex !== -1) {
+    users[userIndex].role = newRole;
+    localStorage.setItem('users', JSON.stringify(users));
+    loadUsersList();
+  }
+}
+
+function deleteUser(email) {
+  if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
+  const userIndex = users.findIndex(u => u.email === email);
+  if (userIndex !== -1) {
+    users.splice(userIndex, 1);
+    localStorage.setItem('users', JSON.stringify(users));
+    loadUsersList();
+  }
+}
+
+// ================ VISUALIZAÇÃO PRINCIPAL ================
+function showMainSection() {
+  // Exibir aba A Faturar apenas para admin/finance
+  if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance')) {
+    document.getElementById('faturarTab').style.display = 'inline-block';
+    document.getElementById('faturarTab').addEventListener('click', function() {
+      switchTab('faturar');
+    });
+  } else {
+    document.getElementById('faturarTab').style.display = 'none';
+  }
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('mainSection').style.display = 'block';
+  
+  // Atualizar info do usuário
+  if (currentUser.role === 'consultant') {
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('userRole').textContent = 'Consultor';
+    document.getElementById('manageUsersBtn').style.display = 'none';
+  } else {
+    document.getElementById('userName').textContent = currentUser.name || currentUser.email;
+    document.getElementById('userRole').textContent = getRoleLabel(currentUser.role);
+    document.getElementById('manageUsersBtn').style.display = currentUser.role === 'admin' ? 'block' : 'none';
+  }
+  
+  // Garantir que a aba de Cotação está selecionada por padrão
+  switchTab('calculator');
+  
+  // Carregar dados
+  loadRequestsTable();
+  loadFinalizedTable();
+  loadCanceledTable();
+  updateDashboard();
+}
+
+function updateUserDisplay() {
+  if (!currentUser) return;
+  
+  const userName = document.getElementById('userName');
+  const userRole = document.getElementById('userRole');
+  const adminBtn = document.getElementById('manageUsersBtn');
+  
+  if (currentUser.isConsultant) {
+    userName.textContent = currentUser.name;
+    userRole.textContent = 'Consultor';
+    adminBtn.style.display = 'none';
+  } else {
+    userName.textContent = currentUser.email || currentUser.name;
+    userRole.textContent = getRoleLabel(currentUser.role);
+    adminBtn.style.display = currentUser.role === 'admin' ? 'block' : 'none';
+  }
+}
+
+document.getElementById('calcForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const data = Object.fromEntries(formData);
+
+  // Envie os dados reais para o backend
+   fetch('http://localhost:3001/enviar-email',{
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      condominio: data.condominio || '',
+      data_inicio: data.data_inicio || '',
+      data_fim: data.data_fim || '',
+      colaboradores: data['Quantidade De Colaboradores'] || '',
+      solicitante: data.Solicitante || '',
+      email: data['E-mail'] || '',
+      observacoes: data.Observações || ''
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+  })
+  .catch(err => {
+    alert('Erro ao enviar e-mail: ' + err.message);
+  });
+});
+
+function switchTab(tab) {
+  // Ocultar todas as seções
+  document.getElementById('calculatorSection') && (document.getElementById('calculatorSection').style.display = 'none');
+  document.getElementById('requestsContainer') && (document.getElementById('requestsContainer').style.display = 'none');
+  document.getElementById('finalizedContainer') && (document.getElementById('finalizedContainer').style.display = 'none');
+  document.getElementById('canceledContainer') && (document.getElementById('canceledContainer').style.display = 'none');
+  document.getElementById('dashboardContainer') && (document.getElementById('dashboardContainer').style.display = 'none');
+  document.getElementById('faturarContainer') && (document.getElementById('faturarContainer').style.display = 'none');
+
+  // Remover classe active de todas as abas
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  // Mostrar seção selecionada
+  switch(tab) {
+    case 'calculator':
+      document.getElementById('calculatorSection').style.display = 'block';
+      document.getElementById('calcTab').classList.add('active');
+      break;
+    case 'requests':
+      document.getElementById('requestsContainer').style.display = 'block';
+      document.getElementById('requestsTab').classList.add('active');
+      loadRequestsTable();
+      break;
+    case 'faturar':
+      document.getElementById('faturarContainer').style.display = 'block';
+      document.getElementById('faturarTab').classList.add('active');
+      loadFaturarTable();
+      break;
+    case 'finalized':
+      document.getElementById('finalizedContainer').style.display = 'block';
+      document.getElementById('finalizedTab').classList.add('active');
+      loadFinalizedTable();
+      break;
+    case 'canceled':
+      document.getElementById('canceledContainer').style.display = 'block';
+      document.getElementById('canceledTab').classList.add('active');
+      loadCanceledTable();
+      break;
+    case 'dashboard':
+      document.getElementById('dashboardContainer').style.display = 'block';
+      document.getElementById('dashboardTab').classList.add('active');
+      updateDashboard();
+      break;
+    case 'faturar':
+      document.getElementById('faturarContainer').style.display = 'block';
+      document.getElementById('faturarTab').classList.add('active');
+      loadFaturarTable();
+      break;
+      case 'faturar':
+  document.getElementById('faturarContainer').style.display = 'block';
+  break;
+  }
+// ================ TELA A FATURAR ================
+// Adiciona container da tela A Faturar idêntico ao Quadro de Solicitações
+const faturarContainerHtml = `
+<div id="faturarContainer" class="requests-container faturar-container">
+  <div class="requests-header" style="background-color:#f0f8ff;">
+    <h2 style="text-align:center; width:100%;">A Faturar</h2>
+    <div class="export-controls">
+      <input type="text" id="searchFaturar1" class="filter-input searchFaturar" placeholder="Buscar...">
+      <button id="exportFaturarBtn" class="export-btn">
+        <i class="fas fa-file-excel"></i> Exportar Excel
+      </button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="requests-table" id="faturarTable">
+      <thead>
+        <tr>
+            <th>ID</th>
+            <th>Condomínio</th>
+            <th>Data Início</th>
+            <th>Data Fim</th>
+            <th>Colaboradores</th>
+            <th>Solicitante</th>
+            <th>E-mail</th>
+            <th>Observações</th>
+            <th>Tipo Faturamento</th>
+            <th>Dias</th>
+            <th>Cargo</th>
+            <th>Valor</th>
+            <th>Desconto</th>
+            <th>Valor Atualizado</th>
+            <th>Data Criação</th>
+            <th>Status</th>
+            <th style="text-align: center; width: 320px; vertical-align: middle;">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="faturarTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+`;
+document.body.insertAdjacentHTML('beforeend', faturarContainerHtml);
+// 3. Filtro para "A Faturar" (mantenha exatamente assim)
+function loadFaturarTable() {
+    // Garante que o tbody existe, se não existir, cria
+    let faturarTable = document.getElementById('faturarTable');
+    let tbody = document.getElementById('faturarTableBody');
+    if (!tbody && faturarTable) {
+        tbody = document.createElement('tbody');
+        tbody.id = 'faturarTableBody';
+        faturarTable.appendChild(tbody);
+    }
+    // Exibe apenas solicitações com status 'A Faturar'
+    const aFaturar = requests.filter(req => req.status === 'A Faturar');
+
+    if (aFaturar.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;color:#888;">Nenhuma solicitação a faturar.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = '';
+    aFaturar.forEach(req => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${req.id}</td>
+            <td>${req.condominio}</td>
+            <td>${formatDate(req.data_inicio)}</td>
+            <td>${formatDate(req.data_fim)}</td>
+            <td>${req['Quantidade De Colaboradores']}</td>
+            <td>${req.Solicitante}</td>
+            <td>${req['E-mail']}</td>
+            <td>${req.Observações}</td>
+            <td>${req.tipo_faturamento}</td>
+            <td>${req.quantidade_dias}</td>
+            <td>${req.cargo}</td>
+            <td>${req.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+            <td>
+                <input type="text" class="editable-discount" value="${(req.desconto || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}"
+                    ${(currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance')) ? '' : 'readonly'}
+                    onfocus="if(currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance')){this.value = parseFloat(this.value.replace(/[^0-9,]/g, '').replace(',', '.')) || 0}"
+                    onblur="if(currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance')){updateDiscount(${req.id}, this.value, this); this.value = parseFloat(this.value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}"
+                    style="width: 100px; text-align: center; background: ${(currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance')) ? 'white' : '#eee'};">
+            </td>
+            <td>${(req.valor_total - (req.desconto || 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+            <td>${formatDateTime(req.data_criacao)}</td>
+            <td><span class="status status-${req.status.toLowerCase()}">${getStatusLabel(req.status)}</span></td>
+            <td style="text-align:center; vertical-align:middle;">
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;">
+                    <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+                        <button onclick="finalizeRequest(${req.id})" class="action-btn btn-success">
+                            <i class="fas fa-check"></i> Finalizar
+                        </button>
+                        ${req.pdfAssinado ? `
+                            <button onclick="visualizarPdfAssinado(${req.id})" class="action-btn btn-signed">
+                                <i class="fas fa-file-signature"></i> PDF Assinado
+                            </button>
+                        ` : `
+                       <button onclick="visualizarPdfOriginal(${req.id})" class="action-btn btn-primary">
+                          <i class="fas fa-file-pdf"></i> Original
+                        </button>
+                            <button onclick="abrirUploadPdf(${req.id})" class="action-btn btn-success">
+                                <i class="fas fa-signature"></i> Assinar
+                            </button>
+                        `}
+                    </div>
+                    <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+                        <button onclick="cancelRequest(${req.id})" class="action-btn btn-danger">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button onclick="deleteRequest(${req.id})" class="action-btn btn-danger">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+  // Ocultar todas as seções
+  document.getElementById('calculatorSection').style.display = 'none';
+  document.getElementById('requestsContainer').style.display = 'none';
+  document.getElementById('finalizedContainer').style.display = 'none';
+  document.getElementById('canceledContainer').style.display = 'none';
+  document.getElementById('dashboardContainer').style.display = 'none';
+  
+  
+  // Remover classe active de todas as abas
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Mostrar seção selecionada
+  switch(tab) {
+    case 'calculator':
+      document.getElementById('calculatorSection').style.display = 'block';
+      document.getElementById('calcTab').classList.add('active');
+      break;
+    case 'requests':
+      document.getElementById('requestsContainer').style.display = 'block';
+      document.getElementById('requestsTab').classList.add('active');
+      loadRequestsTable();
+      break;
+    case 'finalized':
+      document.getElementById('finalizedContainer').style.display = 'block';
+      document.getElementById('finalizedTab').classList.add('active');
+      loadFinalizedTable();
+      break;
+    case 'canceled':
+      document.getElementById('canceledContainer').style.display = 'block';
+      document.getElementById('canceledTab').classList.add('active');
+      loadCanceledTable();
+      break;
+    case 'dashboard':
+      // Força exibição do dashboard para admin, finance e operation
+      if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance' || currentUser.role === 'operation')) {
+        document.getElementById('dashboardContainer').style.display = 'block';
+      } else {
+        document.getElementById('dashboardContainer').style.display = 'none';
+      }
+      document.getElementById('dashboardTab').classList.add('active');
+      updateDashboard();
+      break;
+  }
+}
+
+// ================ GERENCIAMENTO DE SOLICITAÇÕES ================
+function loadRequestsTable() {
+  const tbody = document.getElementById('requestsTableBody');
+  let onlyAprovados = false;
+  if (arguments.length > 0 && arguments[0] === true) {
+    onlyAprovados = true;
+  }
+  // Exibe apenas solicitações que NÃO estão em 'A Faturar' e NÃO estão finalizadas
+  let pendingRequests = requests.filter(req => {
+    const emAFaturar = req.status === 'A Faturar';
+    const finalizado = req.status === 'Finalizado';
+    return !emAFaturar && !finalizado;
+  });
+  if (onlyAprovados) {
+    pendingRequests = pendingRequests.filter(req => req.realizado && req.realizado.trim().toLowerCase() === 'aprovado');
+  }
+  if (pendingRequests.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;color:#888;">Nenhuma solicitação encontrada para este filtro.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = '';
+  pendingRequests.forEach(req => {
+    if (req.status && req.status.toLowerCase() === 'reprovado') {
+      // Não exibe na tabela principal, vai para Cancelados
+      return;
+    }
+    const row = document.createElement('tr');
+    const desconto = parseFloat(req.desconto) || 0;
+    const valorAtualizado = req.valor_total - desconto;
+    let canEditDesconto = currentUser && (currentUser.role === 'admin' || currentUser.role === 'finance');
+    const canApproveReject = currentUser && currentUser.role === 'operations';
+    const hasFullAccess = currentUser && ['admin', 'finance', 'operations'].includes(currentUser.role);
+    row.innerHTML = `
+      <td>${req.id}</td>
+      <td>${req.condominio}</td>
+      <td>${formatDate(req.data_inicio)}</td>
+      <td>${formatDate(req.data_fim)}</td>
+      <td>${req['Quantidade De Colaboradores']}</td>
+      <td>${req.Solicitante}</td>
+      <td>${req['E-mail']}</td>
+      <td>${req.Observações}</td>
+      <td>${req.tipo_faturamento}</td>
+      <td>${req.quantidade_dias}</td>
+      <td>${req.cargo}</td>
+      <td>${req.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+      <td>
+        <input type="text" class="editable-discount" value="${desconto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}" disabled style="width: 100px; text-align: center;">
+      </td>
+      <td>${valorAtualizado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+      <td>${formatDateTime(req.data_criacao)}</td>
+      <td><span class="status status-${req.status}">${getStatusLabel(req.status)}</span></td>
+      <td>
+        <div style="display: flex; gap: 12px; justify-content: center; align-items: center;">
+          <button onclick="aprovarSolicitacao(${req.id})" class="action-btn btn-success" title="Aprovar"${canApproveReject ? '' : ' disabled'}>
+            <i class="fas fa-check"></i>
+          </button>
+          <button onclick="reprovarSolicitacao(${req.id})" class="action-btn btn-danger" title="Reprovar"${canApproveReject ? '' : ' disabled'}>
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </td>
+      <td>
+        <div class="action-grid">
+          <div class="action-row">
+            ${req.pdfAssinado ? `
+              <button onclick="visualizarPdfAssinado(${req.id})" class="action-btn btn-signed">
+                <i class="fas fa-file-signature"></i> PDF Assinado
+              </button>
+            ` : `
+              <button onclick="visualizarPdfOriginal(${req.id})" class="action-btn btn-primary">
+                <i class="fas fa-file-pdf"></i> Original
+              </button>
+              <button onclick="abrirUploadPdf(${req.id})" class="action-btn btn-success">
+                <i class="fas fa-signature"></i> Assinar
+              </button>
+            `}
+          </div>
+          <div class="action-row">
+          <button onclick="cancelRequest(${req.id})" class="action-btn btn-danger"${hasFullAccess ? '' : ' disabled'}>
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+
+          <button onclick="deleteRequest(${req.id})" class="action-btn btn-danger"${hasFullAccess ? '' : ' disabled'}>
+            <i class="fas fa-trash"></i> Excluir
+          </button>
+          </div>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// 1. Função de Aprovação - Leva para "A Faturar"
+function aprovarSolicitacao(id) {
+    const idx = requests.findIndex(req => req.id === id);
+    if (idx === -1) return;
+
+    requests[idx].data_aprovacao = new Date().toISOString(); // Adiciona data de aprovação
+    requests[idx].faturado = 'Pendente';
+    if (requests[idx].pdfAssinado) {
+        requests[idx].status = 'A Faturar';
+    } else {
+        requests[idx].status = 'Pendente - Faturar';
+    }
+    localStorage.setItem('requests', JSON.stringify(requests));
+    loadRequestsTable();
+    loadFaturarTable && loadFaturarTable();
+    loadFinalizedTable && loadFinalizedTable();
+    updateDashboard && updateDashboard();
+}
+
+function reprovarSolicitacao(id) {
+  const idx = requests.findIndex(r => r.id === id);
+  if (idx === -1) return;
+  requests[idx].status = 'Reprovado';
+  requests[idx].realizado = 'Reprovado';
+  requests[idx].data_cancelamento = new Date().toISOString();
+  requests[idx].motivo_cancelamento = 'Reprovado pela operação';
+  localStorage.setItem('requests', JSON.stringify(requests));
+  loadRequestsTable();
+  loadCanceledTable && loadCanceledTable();
+  updateDashboard && updateDashboard();
+}
+
+// 4. Filtro para "Finalizados" (exemplo)
+function loadFinalizedTable() {
+    const tbody = document.getElementById('finalizedTableBody');
+    // Corrigindo: usar requests.filter() em vez de finalizedRequests
+    const finalizados = requests.filter(req => 
+        req.status === 'Finalizado'
+    );
+
+    if (finalizados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;color:#888;">
+            Nenhuma solicitação finalizada encontrada.</td></tr>`;
+        return;
+    }
+
+    const canReopen = currentUser && ['admin','finance','operations'].includes(currentUser.role);
+    tbody.innerHTML = '';
+    finalizados.forEach(req => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${req.id}</td>
+            <td>${req.condominio}</td>
+            <td>${formatDate(req.data_inicio)}</td>
+            <td>${formatDate(req.data_fim)}</td>
+            <td>${req['Quantidade De Colaboradores']}</td>
+            <td>${req.Solicitante}</td>
+            <td>${req['E-mail']}</td>
+            <td>${req.Observações}</td>
+            <td>${req.tipo_faturamento}</td>
+            <td>${req.quantidade_dias}</td>
+            <td>${req.cargo}</td>
+            <td>${req.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+            <td>${formatDateTime(req.data_criacao)}</td>
+            <td>${formatDateTime(req.data_finalizacao || req.dataAssinatura)}</td>
+            <td>${(req.desconto || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+            <td>
+                <button onclick="visualizarPdfOriginal(${req.id})" class="action-btn btn-primary">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button onclick="reopenRequest(${req.id})" class="action-btn btn-reopen" ${canReopen ? '' : 'disabled'}>
+                    <i class="fas fa-undo"></i> Reabrir
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function loadCanceledTable() {
+  const tbody = document.getElementById('canceledTableBody');
+  const canceledRequests = requests.filter(req => 
+    req.status.toLowerCase() === 'cancelado' || 
+    req.status.toLowerCase() === 'reprovado'
+  );
+  
+  tbody.innerHTML = '';
+  
+  const canReopen = currentUser && ['admin','finance','operations'].includes(currentUser.role);
+  canceledRequests.forEach(req => {
+    const row = document.createElement('tr');
+    let valorCell = '<td>****</td>';
+    if (!currentUser || currentUser.role !== 'consultant') {
+      valorCell = `<td>${req.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>`;
+    }
+    row.innerHTML = `
+      <td>${req.id}</td>
+      <td>${req.condominio}</td>
+      <td>${formatDate(req.data_inicio)}</td>
+      <td>${formatDate(req.data_fim)}</td>
+      <td>${req['Quantidade De Colaboradores']}</td>
+      <td>${req.Solicitante}</td>
+      <td>${req['E-mail']}</td>
+      <td>${req.Observações}</td>
+      <td>${req.tipo_faturamento}</td>
+      <td>${req.quantidade_dias}</td>
+      <td>${req.cargo}</td>
+      ${valorCell}
+      <td>${formatDateTime(req.data_criacao)}</td>
+      <td>${formatDateTime(req.data_cancelamento)}</td>
+      <td>${req.motivo_cancelamento}</td>
+      <td>
+        <button onclick="visualizarPdfOriginal(${req.id})" class="action-btn btn-primary">
+          <i class="fas fa-file-pdf"></i> PDF
+        </button>
+        <button onclick="reopenRequest(${req.id})" class="action-btn btn-reopen" ${canReopen ? '' : 'disabled'}>
+          <i class="fas fa-undo"></i> Reabrir
+        </button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function updateDashboard() {
+  // Dashboard só aparece na aba dashboard
+  const dashboardTabActive = document.getElementById('dashboardTab').classList.contains('active');
+  if (dashboardTabActive && currentUser && (currentUser.role === 'admin' || currentUser.role === 'operation' || currentUser.role === 'finance')) {
+    document.getElementById('dashboardContainer').style.display = 'block';
+  } else {
+    document.getElementById('dashboardContainer').style.display = 'none';
+    return;
+  }
+  const totalCotacoes = requests.length;
+  // Finalizados = status 'Finalizado'
+  const finalizados = requests.filter(req => req.status === 'Finalizado');
+  const cancelados = requests.filter(req => req.status && (req.status.toLowerCase() === 'cancelado' || req.status.toLowerCase() === 'reprovado'));
+  const valorTotalFinalizados = finalizados.reduce((sum, req) => sum + (parseFloat(req.valor_total) || 0), 0);
+  const valorTotalCancelados = cancelados.reduce((sum, req) => sum + (parseFloat(req.valor_total) || 0), 0);
+  const valorTotal = valorTotalFinalizados;
+  document.getElementById('totalCotacoes').textContent = totalCotacoes;
+  document.getElementById('cotacoesAprovadas').textContent = totalCotacoes > 0 ? `${Math.round((finalizados.length / totalCotacoes) * 100)}%` : '0%';
+  document.getElementById('cotacoesCanceladas').textContent = totalCotacoes > 0 ? `${Math.round((cancelados.length / totalCotacoes) * 100)}%` : '0%';
+  // Calcula % em andamento corretamente: 100% - %aprovadas - %canceladas
+  const pctAprovadas = totalCotacoes > 0 ? Math.round((finalizados.length / totalCotacoes) * 100) : 0;
+  const pctCanceladas = totalCotacoes > 0 ? Math.round((cancelados.length / totalCotacoes) * 100) : 0;
+  const pctAndamento = Math.max(0, 100 - pctAprovadas - pctCanceladas);
+  document.getElementById('cotacoesAndamento').textContent = `${pctAndamento}%`;
+  // Valor em andamento = soma dos valores das solicitações do Quadro de Solicitações
+  var emAndamentoRequests = requests.filter(req => {
+    const emAFaturar = req.status === 'A Faturar';
+    const finalizado = req.status === 'Finalizado';
+    const canceladoOuReprovado = req.status && (req.status.toLowerCase() === 'cancelado' || req.status.toLowerCase() === 'reprovado');
+    return !emAFaturar && !finalizado && !canceladoOuReprovado;
+  });
+  var valorAndamento = emAndamentoRequests.reduce(function(sum, req) { return sum + (parseFloat(req.valor_total) || 0); }, 0);
+  if (document.getElementById('valorAndamento')) {
+    document.getElementById('valorAndamento').textContent = valorAndamento.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+// Atualiza os valores de aprovação, cancelamento e total
+if (document.getElementById('valorAprovada')) {
+  document.getElementById('valorAprovada').textContent = valorTotalFinalizados.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+if (document.getElementById('valorCancelada')) {
+  document.getElementById('valorCancelada').textContent = valorTotalCancelados.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+if (document.getElementById('valorTotal')) {
+  var valorTotalGeral = valorTotalFinalizados + valorTotalCancelados + valorAndamento;
+  document.getElementById('valorTotal').textContent = valorTotalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+  // ...existing code...
+
+  // Preencher tabela de status das cotações
+  const tbody = document.getElementById('dashboardStatusTableBody');
+  if (tbody) {
+    tbody.innerHTML = '';
+    requests.forEach(req => {
+      const desconto = parseFloat(req.desconto) || 0;
+      const valorAtualizado = req.valor_total - desconto;
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${req.id}</td>
+        <td>${req.condominio}</td>
+        <td>${formatDate(req.data_inicio)}</td>
+        <td>${formatDate(req.data_fim)}</td>
+        <td>${req['Quantidade De Colaboradores']}</td>
+        <td>${req.Solicitante}</td>
+        <td>${req['E-mail']}</td>
+        <td>${req.Observações || ''}</td>
+        <td>${req.tipo_faturamento}</td>
+        <td>${req.quantidade_dias}</td>
+        <td>${req.cargo}</td>
+        <td>${req.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        <td>${desconto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        <td>${valorAtualizado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        <td>${formatDateTime(req.data_criacao)}</td>
+        <td><span class="status status-${req.status}">${getStatusLabel(req.status)}</span></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+}
+
+// ================ OPERAÇÕES COM SOLICITAÇÕES ================
+function displayResult(cotacao) {
+  const resultDiv = document.getElementById('result');
+  const dataInicioInput = document.getElementById('data_inicio').value;
+  const dataFimInput = document.getElementById('data_fim').value;
+  
+  const formatarData = (dataString) => {
+    if (!dataString) return '';
+    if (typeof dataString === 'string') {
+      if (dataString.includes('-')) {
+        // Formato yyyy-mm-dd
+        const [ano, mes, dia] = dataString.split('-');
+        return `${dia}/${mes}/${ano}`;
+      } else if (dataString.includes('/')) {
+        // Formato dd/mm/yyyy
+        return dataString;
+      } else {
+        // Tenta converter para Date
+        const d = new Date(dataString);
+        if (!isNaN(d)) {
+          return d.toLocaleDateString('pt-BR');
+        }
+      }
+    } else if (dataString instanceof Date) {
+      return dataString.toLocaleDateString('pt-BR');
+    }
+    return '';
+  };
+  
+  const desconto = 0;
+  const valorAtualizado = cotacao.valor_total - desconto;
+  
+  resultDiv.innerHTML = `
+    <h3>Resultado da Cotação</h3>
+    <div class="result-row">
+      <span class="result-label">Período:</span>
+      <span class="result-value">${formatarData(dataInicioInput)} até ${formatarData(dataFimInput)}</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Condomínio:</span>
+      <span class="result-value">${cotacao.condominio}</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Tipo de Faturamento:</span>
+      <span class="result-value">${cotacao.tipo_faturamento}</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Cargo:</span>
+      <span class="result-value">${cotacao.cargo}</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Valor da Diária:</span>
+      <span class="result-value">R$ ${cotacao.valor_diario.toFixed(2)}</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Valor Total:</span>
+      <span class="result-value">R$ ${cotacao.valor_total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+    </div>
+    <div class="result-final">
+      <strong>Valor Final: R$ ${valorAtualizado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+    </div>
+    <button id="btnGerarSalvarPDF" class="btn-pdf">
+      <i class="fas fa-file-pdf"></i> Salvar e Gerar PDF
+    </button>
+  `;
+  
+  // Salva a última cotação gerada para garantir que será salva ao gerar PDF
+  window.lastCotacaoGerada = cotacao;
+  
+  // Garante que o botão funcione mesmo se o HTML for re-renderizado
+  setTimeout(() => {
+    const btn = document.getElementById('btnGerarSalvarPDF');
+    if (btn) btn.onclick = () => gerarSalvarBtn(cotacao.id);
+  }, 10);
+  
+// Função para garantir que o template fique visível durante a captura do PDF
+function mostrarTemplatePdfTemporariamente(callback) {
+  const pdfTemplate = document.getElementById('pdf-template');
+  const displayAnterior = pdfTemplate.style.display;
+  pdfTemplate.style.display = 'block';
+  setTimeout(() => {
+    callback();
+    setTimeout(() => {
+      pdfTemplate.style.display = displayAnterior;
+    }, 500);
+  }, 100); // Pequeno delay para renderizar
+}
+
+function gerarSalvarBtn(requestId) {
+  try {
+    let requestIndex = requests.findIndex(req => req.id === requestId);
+    let request;
+    // Se não encontrar, tenta pegar do último resultado exibido (caso não tenha sido salvo ainda)
+    if (requestIndex === -1 && window.lastCotacaoGerada) {
+      request = window.lastCotacaoGerada;
+      requests.push(request);
+      requestIndex = requests.length - 1;
+      // Salva imediatamente no localStorage
+      localStorage.setItem('requests', JSON.stringify(requests));
+    } else if (requestIndex !== -1) {
+      request = requests[requestIndex];
+    } else {
+      alert('Cotação não encontrada no sistema!');
+      return;
+    }
+
+    // Preenche os dados no template PDF
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    setText('pdf-condominio', request.condominio);
+    setText('pdf-condominio-final', request.condominio);
+    setText('pdf-data', formatarData(new Date()));
+    setText('pdf-quantidade', request['Quantidade De Colaboradores']);
+    setText('pdf-cargo', request.cargo);
+    setText('pdf-funcao', `${request['Quantidade De Colaboradores']} ${request.cargo}`);
+    const periodo = `${formatDate(request.data_inicio)} até ${formatDate(request.data_fim)}`;
+    setText('pdf-periodo', `${request.quantidade_dias} Dias - ${periodo}`);
+    setText('pdf-valor', `${request.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`);
+
+    mostrarTemplatePdfTemporariamente(() => {
+      const pdfTemplate = document.getElementById('pdf-template');
+      const options = {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#FFFFFF',
+        logging: false,
+        allowTaint: true
+      };
+      window.html2canvas(pdfTemplate, options).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        // Compatibilidade máxima para jsPDF
+        let PDFClass = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (typeof jsPDF !== 'undefined' ? jsPDF : null);
+        if (!PDFClass) {
+          alert('jsPDF não carregado!');
+          return;
+        }
+        const pdf = new PDFClass({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+        const imgWidth = 210; // Largura A4 em mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        // Força o download do PDF
+        const nomeArquivo = `Proposta_${request.condominio.replace(/\s/g, '_')}_${formatarData(new Date())}.pdf`;
+        if (pdf.save) {
+          pdf.save(nomeArquivo);
+        } else if (pdf.output) {
+          // Fallback para browsers antigos
+          const blob = pdf.output('blob');
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = nomeArquivo;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        // Salva o PDF original no IndexedDB
+        savePdfOriginalToIndexedDB(request.id, imgData)
+          .then(() => {
+            request.pdfOriginal = true; // Apenas referência
+            requests[requestIndex] = request;
+            localStorage.setItem('requests', JSON.stringify(requests));
+            if (typeof loadRequestsTable === 'function') loadRequestsTable();
+            if (typeof switchTab === 'function') switchTab('requests');
+          })
+          .catch((err) => {
+            alert('Erro ao salvar PDF original: ' + err.message);
+          });
+      }).catch(error => {
+        console.error('Erro ao gerar PDF:', error);
+        alert('Erro ao gerar PDF: ' + error.message);
+      });
+    });
+  } catch (error) {
+    console.error('Erro completo:', error);
+    alert('Erro ao processar: ' + error.message);
+  }
+  // Salva a última cotação gerada para garantir que será salva ao gerar PDF
+  window.lastCotacaoGerada = cotacao;
+}
+  
+  resultDiv.style.display = 'block';
+}
+
+// Função para baixar o PDF original
+function baixarPdfOriginal(requestId) {
+    const req = requests.find(r => r.id === requestId);
+    if (!req || !req.pdfOriginal) {
+        alert('PDF original não encontrado para esta solicitação!');
+        return;
+    }
+    // Buscar PDF original do IndexedDB
+    getPdfOriginalFromIndexedDB(requestId)
+      .then(imgData => {
+        if (!imgData) {
+          alert('PDF original não encontrado no armazenamento!');
+          return;
+        }
+        // Abre o PDF em uma nova janela
+        const win = window.open();
+        win.document.write(`
+            <iframe 
+                src="${imgData}"
+                style="width:100%;height:100%;border:none;"
+                title="PDF Original"
+            ></iframe>
+        `);
+      })
+      .catch(() => {
+        alert('Erro ao recuperar PDF original!');
+      });
+}
+
+// Salva o PDF original no IndexedDB
+function savePdfOriginalToIndexedDB(requestId, imgData) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PDFStorageDB', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('pdfsOriginais')) {
+                db.createObjectStore('pdfsOriginais', { keyPath: 'id' });
+            }
+        };
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction('pdfsOriginais', 'readwrite');
+            const store = transaction.objectStore('pdfsOriginais');
+            const putReq = store.put({ id: requestId, imgData });
+            putReq.onsuccess = () => resolve();
+            putReq.onerror = () => reject(new Error('Falha ao salvar PDF original no IndexedDB'));
+        };
+        request.onerror = () => reject(new Error('Falha ao acessar o banco de dados IndexedDB'));
+    });
+}
+
+// Recupera o PDF original do IndexedDB
+function getPdfOriginalFromIndexedDB(requestId) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PDFStorageDB', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('pdfsOriginais')) {
+                db.createObjectStore('pdfsOriginais', { keyPath: 'id' });
+            }
+        };
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction('pdfsOriginais', 'readonly');
+            const store = transaction.objectStore('pdfsOriginais');
+            const getReq = store.get(requestId);
+            getReq.onsuccess = () => {
+                if (getReq.result && getReq.result.imgData) {
+                    resolve(getReq.result.imgData);
+                } else {
+                    resolve(null);
+                }
+            };
+            getReq.onerror = () => reject(new Error('Falha ao recuperar PDF original do IndexedDB'));
+        };
+        request.onerror = () => reject(new Error('Falha ao acessar o banco de dados IndexedDB'));
+    });
+}
+
+
+// Função para visualizar o PDF assinado igual ao PDF original
+function visualizarPdfAssinado(requestId) {
+    const req = requests.find(r => r.id === requestId);
+    if (!req || !req.pdfAssinado) {
+        alert('PDF assinado não encontrado para esta solicitação!');
+        return;
+    }
+    // Se pdfAssinado for base64, abrir diretamente
+    if (typeof req.pdfAssinado === 'string' && req.pdfAssinado.startsWith('data:application/pdf')) {
+        const byteString = atob(req.pdfAssinado.split(',')[1]);
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        const pdfBlob = new Blob([ab], { type: 'application/pdf' });
+        const url = URL.createObjectURL(pdfBlob);
+        const win = window.open(url, '_blank');
+        // Revoga a URL após o PDF ser carregado para evitar problemas de reuso
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } else if (req.pdfAssinado === true) {
+        // Buscar do IndexedDB
+        getPdfAssinadoFromIndexedDB(requestId)
+          .then(pdfData => {
+            if (!pdfData || typeof pdfData !== 'string' || !pdfData.startsWith('data:application/pdf')) {
+                alert('PDF assinado não encontrado no armazenamento!');
+                return;
+            }
+            const byteString = atob(pdfData.split(',')[1]);
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            const pdfBlob = new Blob([ab], { type: 'application/pdf' });
+            const url = URL.createObjectURL(pdfBlob);
+            const win = window.open(url, '_blank');
+            setTimeout(() => URL.revokeObjectURL(url), 2000);
+          })
+          .catch(() => {
+            alert('Erro ao recuperar PDF assinado!');
+          });
+    } else {
+        alert('Formato de PDF assinado não reconhecido!');
+    }
+}
+
+// 2. Função de Finalização - Leva para "Finalizados"
+function finalizeRequest(id) {
+    const idx = requests.findIndex(req => req.id === id);
+    if (idx === -1) return;
+    requests[idx].status = 'Finalizado';
+    requests[idx].data_finalizacao = new Date().toISOString();
+    requests[idx].faturado = 'Finalizado';
+    localStorage.setItem('requests', JSON.stringify(requests));
+    if (typeof loadRequestsTable === 'function') loadRequestsTable();
+    if (typeof loadFaturarTable === 'function') loadFaturarTable();
+    if (typeof loadFinalizedTable === 'function') loadFinalizedTable();
+    if (typeof updateDashboard === 'function') updateDashboard();
+}
+
+function cancelRequest(requestId) {
+  const motivo = prompt('Motivo do cancelamento:');
+  if (!motivo) return;
+  const requestIndex = requests.findIndex(req => req.id === requestId);
+  if (requestIndex === -1) return;
+  requests[requestIndex].status = 'cancelado';
+  requests[requestIndex].data_cancelamento = new Date().toISOString();
+  requests[requestIndex].motivo_cancelamento = motivo;
+  localStorage.setItem('requests', JSON.stringify(requests));
+  if (typeof loadRequestsTable === 'function') loadRequestsTable();
+  if (typeof loadFaturarTable === 'function') loadFaturarTable();
+  if (typeof loadCanceledTable === 'function') loadCanceledTable();
+  if (typeof updateDashboard === 'function') updateDashboard();
+  showCancelFeedback();
+}
+
+function deleteRequest(requestId) {
+  if (!confirm('Tem certeza que deseja excluir esta solicitação?')) return;
+  const requestIndex = requests.findIndex(req => req.id === requestId);
+  if (requestIndex === -1) return;
+  requests.splice(requestIndex, 1);
+  localStorage.setItem('requests', JSON.stringify(requests));
+  if (typeof loadRequestsTable === 'function') loadRequestsTable();
+  if (typeof loadFaturarTable === 'function') loadFaturarTable();
+  if (typeof loadFinalizedTable === 'function') loadFinalizedTable();
+  if (typeof loadCanceledTable === 'function') loadCanceledTable();
+  if (typeof updateDashboard === 'function') updateDashboard();
+}
+
+function reopenRequest(requestId) {
+  const requestIndex = requests.findIndex(req => req.id === requestId);
+  if (requestIndex === -1) return;
+  
+  requests[requestIndex].status = 'Pendente';
+  delete requests[requestIndex].data_finalizacao;
+  delete requests[requestIndex].data_cancelamento;
+  delete requests[requestIndex].motivo_cancelamento;
+  localStorage.setItem('requests', JSON.stringify(requests));
+  
+  loadRequestsTable();
+  loadFinalizedTable();
+  loadCanceledTable();
+  updateDashboard();
+}
+
+function showCancelFeedback() {
+  const feedback = document.createElement('div');
+  feedback.className = 'canceled-feedback';
+  feedback.textContent = 'Solicitação cancelada com sucesso!';
+  document.body.appendChild(feedback);
+  
+  setTimeout(() => {
+    document.body.removeChild(feedback);
+  }, 3000);
+}
+
+
+
+
+
+// ================ GERENCIAMENTO DE PDFs ================
+let currentRequestIdForPdfUpload = null;
+
+function abrirUploadPdf(requestId) {
+    currentRequestIdForPdfUpload = requestId;
+    document.getElementById('uploadPdfModal').style.display = 'flex';
+}
+
+async function confirmarUploadPdf() {
+    const fileInput = document.getElementById('pdfAssinadoInput');
+    const file = fileInput.files[0];
+    if (!file) {
+        showAlert('error', 'Selecione um arquivo antes de confirmar');
+        return;
+    }
+    try {
+        if (!file.name.toLowerCase().endsWith('.pdf')) {
+            showAlert('warning', 'O arquivo deve ter extensão .pdf');
+            return;
+        }
+        const pdfData = await readFileAsDataURL(file);
+        const requestIndex = requests.findIndex(req => req.id === currentRequestIdForPdfUpload);
+        if (requestIndex === -1) {
+            throw new Error('Solicitação não encontrada');
+        }
+        // Salva PDF no IndexedDB
+        await savePdfAssinadoToIndexedDB(currentRequestIdForPdfUpload, pdfData);
+        // Atualiza objeto da solicitação: pdfAssinado = true (referência)
+        let newStatus = 'Pendente - Assinar';
+        const statusAnterior = requests[requestIndex].status;
+        if (statusAnterior === 'Aprovado' || statusAnterior === 'Pendente - Faturar') {
+            newStatus = 'A Faturar';
+        } else {
+            newStatus = 'Pendente - Assinar';
+        }
+        const updatedRequest = {
+            ...requests[requestIndex],
+            pdfAssinado: true,
+            pdfFileName: file.name,
+            status: newStatus,
+            dataAssinatura: new Date().toISOString()
+        };
+        requests[requestIndex] = updatedRequest;
+        try {
+            localStorage.setItem('requests', JSON.stringify(requests));
+        } catch (storageError) {
+            console.warn('LocalStorage cheio, usando fallback:', storageError);
+            await saveToIndexedDB(requests);
+            showAlert('warning', 'Dados salvos em armazenamento alternativo');
+        }
+        updateAllTables();
+        cancelarUploadPdf();
+        showAlert('success', 'PDF assinado salvo com sucesso!');
+    } catch (error) {
+        console.error('Erro no processamento:', {
+            error,
+            fileInfo: {
+                name: file?.name,
+                type: file?.type,
+                size: file?.size
+            }
+        });
+        showAlert('error', `Erro: ${error.message}`);
+    }
+}
+
+// Salva o PDF assinado no IndexedDB
+function savePdfAssinadoToIndexedDB(requestId, pdfData) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PDFStorageDB', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('pdfsAssinados')) {
+                db.createObjectStore('pdfsAssinados', { keyPath: 'id' });
+            }
+        };
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction('pdfsAssinados', 'readwrite');
+            const store = transaction.objectStore('pdfsAssinados');
+            const putReq = store.put({ id: requestId, pdfData });
+            putReq.onsuccess = () => resolve();
+            putReq.onerror = () => reject(new Error('Falha ao salvar PDF assinado no IndexedDB'));
+        };
+        request.onerror = () => reject(new Error('Falha ao acessar o banco de dados IndexedDB'));
+    });
+}
+
+// Recupera o PDF assinado do IndexedDB
+function getPdfAssinadoFromIndexedDB(requestId) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PDFStorageDB', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('pdfsAssinados')) {
+                db.createObjectStore('pdfsAssinados', { keyPath: 'id' });
+            }
+        };
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction('pdfsAssinados', 'readonly');
+            const store = transaction.objectStore('pdfsAssinados');
+            const getReq = store.get(requestId);
+            getReq.onsuccess = () => {
+                if (getReq.result && getReq.result.pdfData) {
+                    resolve(getReq.result.pdfData);
+                } else {
+                    resolve(null);
+                }
+            };
+            getReq.onerror = () => reject(new Error('Falha ao recuperar PDF assinado do IndexedDB'));
+        };
+        request.onerror = () => reject(new Error('Falha ao acessar o banco de dados IndexedDB'));
+    });
+}
+
+// Fallback para IndexedDB
+async function saveToIndexedDB(data) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PDFStorageDB', 1);
+        
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('requests')) {
+                db.createObjectStore('requests', { keyPath: 'id' });
+            }
+        };
+        
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction('requests', 'readwrite');
+            const store = transaction.objectStore('requests');
+            
+            // Salva cada request individualmente
+            const putOperations = data.map(item => {
+                return new Promise((res, rej) => {
+                    const req = store.put(item);
+                    req.onsuccess = res;
+                    req.onerror = rej;
+                });
+            });
+            
+            Promise.all(putOperations).then(resolve).catch(reject);
+        };
+        
+        request.onerror = (event) => {
+            reject(new Error('Falha ao acessar o banco de dados'));
+        };
+    });
+}
+
+// Funções auxiliares
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Falha na leitura do arquivo'));
+        reader.readAsDataURL(file);
+    });
+}
+
+function cancelarUploadPdf() {
+    document.getElementById('pdfAssinadoInput').value = '';
+    document.getElementById('uploadPdfModal').style.display = 'none';
+    currentRequestIdForPdfUpload = null;
+}
+
+
+function visualizarPdfOriginal(requestId) {
+    const request = requests.find(req => req.id === requestId);
+    if (!request?.pdfOriginal) {
+        alert('PDF original não encontrado para esta solicitação!');
+        return;
+    }
+    // Buscar PDF original do IndexedDB
+    getPdfOriginalFromIndexedDB(requestId)
+      .then(imgData => {
+        if (!imgData) {
+          alert('PDF original não encontrado no armazenamento!');
+          return;
+        }
+        // Se imgData for base64, converter para Blob PDF
+        let pdfBlob;
+        if (imgData.startsWith('data:application/pdf')) {
+          // PDF já em base64
+          const byteString = atob(imgData.split(',')[1]);
+          const ab = new ArrayBuffer(byteString.length);
+          const ia = new Uint8Array(ab);
+          for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+          }
+          pdfBlob = new Blob([ab], { type: 'application/pdf' });
+        } else if (imgData.startsWith('data:image/')) {
+          // Se for imagem, converte para PDF
+          const pdf = new window.jspdf.jsPDF();
+          pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+          pdfBlob = pdf.output('blob');
+        } else {
+          alert('Formato de PDF não reconhecido!');
+          return;
+        }
+        const url = URL.createObjectURL(pdfBlob);
+        window.open(url, '_blank');
+      })
+      .catch(() => {
+        alert('Erro ao recuperar PDF original!');
+      });
+}
+
+// Função melhorada de exibição de alertas
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.style.position = 'fixed';
+    alertDiv.style.top = '20px';
+    alertDiv.style.right = '20px';
+    alertDiv.style.padding = '15px';
+    alertDiv.style.borderRadius = '5px';
+    alertDiv.style.color = 'white';
+    alertDiv.style.zIndex = '10000';
+    alertDiv.style.maxWidth = '300px';
+    alertDiv.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+    
+    const colors = {
+        error: '#dc3545',
+        warning: '#ffc107',
+        success: '#28a745'
+    };
+    
+    alertDiv.style.backgroundColor = colors[type] || '#6c757d';
+    alertDiv.textContent = message;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.style.opacity = '0';
+        setTimeout(() => alertDiv.remove(), 500);
+    }, 5000);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ================ FUNÇÃO GLOBAL PARA FORMATAR DATA ================
+function formatarData(date) {
+  if (!date) return '';
+  try {
+    const d = new Date(date);
+    const dia = String(d.getDate()).padStart(2, '0');
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const ano = d.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+  } catch (e) {
+    return '';
+  }
+}
+</script>
+<script>
+// Atualiza desconto e valor atualizado na tabela ao editar
+function updateDiscount(requestId, value, inputEl) {
+  // Atualiza o array global requests e o localStorage
+  let desconto = parseFloat((value + '').replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
+  let req = requests.find(r => r.id == requestId);
+  if (!req) return;
+  req.desconto = desconto;
+  localStorage.setItem('requests', JSON.stringify(requests));
+  // Atualiza célula do Valor Atualizado na mesma linha
+  if (inputEl && inputEl.parentElement && inputEl.parentElement.parentElement) {
+    let row = inputEl.parentElement.parentElement;
+    // A célula de Valor Atualizado é a próxima célula após o input de desconto
+    let valorAtualizadoCell = inputEl.parentElement.nextElementSibling;
+    if (valorAtualizadoCell) {
+      let valorAtualizado = (req.valor_total || 0) - desconto;
+      valorAtualizadoCell.textContent = valorAtualizado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+  }
+}
+
+// Configurar event listeners para os botões do modal de upload
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmBtn = document.querySelector('#uploadPdfModal button[onclick="confirmarUploadPdf()"]');
+    const cancelBtn = document.querySelector('#uploadPdfModal button[onclick="cancelarUploadPdf()"]');
+    
+    // Substituir os handlers inline por event listeners
+    if (confirmBtn) {
+        confirmBtn.onclick = confirmarUploadPdf;
+    }
+    if (cancelBtn) {
+        cancelBtn.onclick = cancelarUploadPdf;
+    }
+});
+
+// Modifique a função confirmarUploadPdf para ficar assim:
+function confirmarUploadPdf() {
+    const fileInput = document.getElementById('pdfAssinadoInput');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('❌ Selecione um arquivo PDF antes de confirmar');
+        return;
+    }
+
+    // Verificação básica
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+        alert('⚠️ O arquivo deve ter extensão .pdf');
+        return;
+    }
+
+    // Limitar tamanho do arquivo (opcional)
+    if (file.size > 5 * 1024 * 1024) { // 5MB
+        alert('⚠️ O arquivo é muito grande (máx. 5MB)');
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        try {
+            const pdfData = e.target.result;
+            // Não faz verificação de conteúdo, só extensão
+            const requestIndex = requests.findIndex(req => req.id === currentRequestIdForPdfUpload);
+            if (requestIndex === -1) {
+                throw new Error('Solicitação não encontrada');
+            }
+            // Salva o PDF como base64
+            const updatedRequest = {
+                ...requests[requestIndex],
+                pdfAssinado: pdfData,
+                pdfFileName: file.name,
+                status: 'Assinado',
+                dataAssinatura: new Date().toISOString()
+            };
+            requests[requestIndex] = updatedRequest;
+            localStorage.setItem('requests', JSON.stringify(requests));
+            // Atualiza tabelas
+            if (typeof loadRequestsTable === 'function') loadRequestsTable();
+            if (typeof loadFinalizedTable === 'function') loadFinalizedTable();
+            if (typeof loadCanceledTable === 'function') loadCanceledTable();
+            if (typeof updateDashboard === 'function') updateDashboard();
+            if (typeof cancelarUploadPdf === 'function') cancelarUploadPdf();
+            alert('✅ PDF assinado processado com sucesso!');
+        } catch (error) {
+            console.error('Erro detalhado:', error);
+            alert('❌ Falha: ' + error.message);
+        }
+    };
+
+    reader.onerror = () => alert('Erro na leitura do arquivo');
+    reader.readAsDataURL(file);
+}
+</script>
+</body>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Função para agrupar solicitações por mês e status
+function getStatusEvolutionData(requests, status) {};
+  const meses = {};
+  requests.forEach(req => {
+    let data = req.data_criacao || req.data_inicio || req.data_fim;
+    // ...existing code...
+      // renderStatusCharts(); // Removido pois a função não existe
+})
+</script>
+</html>
