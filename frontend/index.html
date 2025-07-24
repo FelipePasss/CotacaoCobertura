@@ -1587,7 +1587,12 @@ button:active {
 <script>
 // ================ VARIÁVEIS GLOBAIS ================
 let currentUser = null;
-let requests = JSON.parse(localStorage.getItem('requests')) || [];
+// Use existing 'requests' variable if already declared, otherwise assign it
+if (typeof requests === 'undefined') {
+  var requests = JSON.parse(localStorage.getItem('requests')) || [];
+} else {
+  requests = JSON.parse(localStorage.getItem('requests')) || [];
+}
 // Limpa pdfAssinado base64 dos requests para liberar espaço no localStorage
 let altered = false;
 requests.forEach(req => {

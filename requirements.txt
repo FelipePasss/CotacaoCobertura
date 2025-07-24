@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 fastapi
 uvicorn
 fpdf
 python-multipart
 gunicorn
+=======
+fastapi
+uvicorn
+fpdf
+python-multipart
+gunicorn
+>>>>>>> origin/main
