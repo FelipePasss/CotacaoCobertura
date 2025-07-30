@@ -2222,28 +2222,6 @@ document.getElementById('calcForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const formData = new FormData(this);
   const data = Object.fromEntries(formData);
-
-  // Envie os dados reais para o backend
-   fetch('http://localhost:3001/enviar-email',{
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      condominio: data.condominio || '',
-      data_inicio: data.data_inicio || '',
-      data_fim: data.data_fim || '',
-      colaboradores: data['Quantidade De Colaboradores'] || '',
-      solicitante: data.Solicitante || '',
-      email: data['E-mail'] || '',
-      observacoes: data.Observações || ''
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    alert(data.message);
-  })
-  .catch(err => {
-    alert('Erro ao enviar e-mail: ' + err.message);
-  });
 });
 
 function switchTab(tab) {
