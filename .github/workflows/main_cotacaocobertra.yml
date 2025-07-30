@@ -1,79 +1,77 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
+# Documentação para a ação de implantação de aplicativos Web do Azure: https://github.com/Azure/webapps-deploy
+# Mais ações do GitHub para o Azure: https://github.com/Azure/actions
+# Mais informações sobre Python, GitHub Actions e Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - CotacaoCobertra
+nome : Construir e implantar aplicativo Python no Azure Web App - CotacaoCobertra
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+sobre :
+  empurrar :
+    galhos :
+      - principal
+  fluxo de trabalho_despacho :
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
+empregos :
+  construir :
+    em execução : ubuntu-latest
+    permissões :
+      conteúdo : ler # Isso é necessário para ações/checkout
 
-    steps:
-      - uses: actions/checkout@v4
+    passos :
+      - usos : ações/checkout@v4
 
-      - name: Set up Python version
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+      - nome : Configurar versão do Python
+        usos : ações/setup-python@v5
+        com :
+          versão python : ' 3.10 '
 
-      - name: Create and start virtual environment
-        run: |
+      - nome : Criar e iniciar ambiente virtual
+        executar : |
           python -m venv venv
-          source venv/bin/activate
+          fonte venv/bin/ativar
       
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - nome : Instalar dependências
+        executar : pip install -r requirements.txt
         
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+      # Opcional: adicione etapas para executar testes aqui (PyTest, suítes de testes Django, etc.)
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+      - nome : Artefato Zip para implantação
+        executar : zip release.zip ./* -r
 
-      - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-app
-          path: |
+      - nome : Carregar artefato para trabalhos de implantação
+        usos : ações/upload-artefato@v4
+        com :
+          nome : python-app
+          caminho : |
             release.zip
             !venv/
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
+  implantar :
+    em execução : ubuntu-latest
+    necessidades : construir
     
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+    permissões :
+      id-token : escrever # Isso é necessário para solicitar o JWT
+      conteúdo : ler # Isso é necessário para ações/checkout
 
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: python-app
+    passos :
+      - nome : Baixar artefato do trabalho de construção
+        usos : ações/download-artefato@v4
+        com :
+          nome : python-app
 
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
+      - nome : Descompactar artefato para implantação
+        executar : descompactar release.zip
 
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_897e2721-6e08-4830-96cb-2872effb24ae }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_b6fb7e09-5ce9-4257-b074-bd1cb9750aaf }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ff33480e-a56b-4e5f-9d7d-8b6aac4d6abd }}
+      - nome : Login no Azure
+        usos : azure/login@v2
+        com :
+          ID do cliente : ${{ secrets.AZUREAPPSERVICE_CLIENTID_76718DE78F904B6ABFF2B75528A86728 }}
+          ID do locatário : ${{ secrets.AZUREAPPSERVICE_TENANTID_504991400977406A8F8F97DFF7FDD5F7 }}
+          ID da assinatura : ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_82E213C2BE7645BC80346651B4846D77 }}
 
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
-        with:
-          app-name: 'CotacaoCobertra'
-          slot-name: 'Production'
-          
+      - nome : ' Implantar no aplicativo Web do Azure '
+        usos : azure/webapps-deploy@v3
+        id : implantar no aplicativo da web
+        com :
+          nome do aplicativo : ' CotacaoCobertra '
+          nome do slot : ' Produção '
