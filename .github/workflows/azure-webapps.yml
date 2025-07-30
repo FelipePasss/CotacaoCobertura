@@ -28,9 +28,9 @@ jobs:
       - name: Login no Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_897e2721-6e08-4830-96cb-2872effb24ae }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_b6fb7e09-5ce9-4257-b074-bd1cb9750aaf }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ff33480e-a56b-4e5f-9d7d-8b6aac4d6abd }}
 
       - name: Deploy direto da pasta backend
         uses: azure/webapps-deploy@v3
