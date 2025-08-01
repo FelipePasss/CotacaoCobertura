@@ -1,5 +1,0 @@
-fastapi
-uvicorn
-fpdf
-python-multipart
-gunicorn
