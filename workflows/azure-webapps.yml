@@ -9,9 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
       - name: Checkout código
@@ -25,16 +22,9 @@ jobs:
       - name: Instalar dependências
         run: pip install -r requirements.txt
 
-      - name: Login no Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_897e2721-6e08-4830-96cb-2872effb24ae }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_b6fb7e09-5ce9-4257-b074-bd1cb9750aaf }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ff33480e-a56b-4e5f-9d7d-8b6aac4d6abd }}
-
       - name: Deploy direto da pasta backend
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'CotacaoCobertra'
-          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./backend
