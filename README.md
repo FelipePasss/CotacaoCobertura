@@ -2,9 +2,9 @@
 
 Sistema completo para gerenciamento de cotações de coberturas e diárias, desenvolvido para o Grupo Solução & Cia.
 
-##  Funcionalidades Implementadas
+## 🚀 Funcionalidades Implementadas
 
-###  Melhorias Recentes
+### ✅ Melhorias Recentes
 - **Sistema de Banco de Dados**: Substituição do localStorage por SQLite para persistência de dados compartilhada
 - **Notificações Inteligentes**: Sistema de notificações que aparecem por 6 segundos na aba "Quadro de Solicitações"
 - **PDFs com Fundo**: Correção do problema de fundo nos PDFs gerados
@@ -13,7 +13,7 @@ Sistema completo para gerenciamento de cotações de coberturas e diárias, dese
 - **Carta de Apresentação**: Funcionalidade para anexar carta de apresentação do colaborador cotado
 - **Remoção de Email**: Removida a funcionalidade de envio de email que causava erros
 
-###  Funcionalidades Principais
+### 📋 Funcionalidades Principais
 - **Gestão de Cotações**: Criação, edição e acompanhamento de cotações
 - **Múltiplos Perfis**: Admin, Financeiro, Operacional e Consultor
 - **Dashboard Gerencial**: Visão completa com estatísticas e gráficos
@@ -22,7 +22,7 @@ Sistema completo para gerenciamento de cotações de coberturas e diárias, dese
 - **Upload de Documentos**: Anexo de PDFs assinados e cartas de apresentação
 - **Sistema de Status**: Controle completo do fluxo de aprovação
 
-##  Instalação
+## 🛠️ Instalação
 
 ### Pré-requisitos
 - Node.js (versão 16 ou superior)
@@ -48,7 +48,7 @@ npm start
 4. **Acesse o sistema**
 Abra seu navegador e acesse: `http://localhost:3001`
 
-##  Usuários Padrão
+## 👥 Usuários Padrão
 
 ### Administrador
 - **Email**: luidilsantos@gscia.com.br
@@ -65,7 +65,7 @@ Abra seu navegador e acesse: `http://localhost:3001`
 ### Consultor
 - Acesso direto sem login, apenas informando o nome
 
-##  Estrutura do Sistema
+## 📊 Estrutura do Sistema
 
 ### Abas Principais
 1. **Cotação**: Criação de novas cotações
@@ -81,7 +81,7 @@ Abra seu navegador e acesse: `http://localhost:3001`
 - **Filtro por data**: Data de criação, finalização, cancelamento
 - **Filtro por tipo**: Terceirizado, Orgânico, Linha Verde
 
-##  Configuração
+## 🔧 Configuração
 
 ### Banco de Dados
 O sistema utiliza SQLite para armazenamento local. O arquivo `cotacoes.db` será criado automaticamente na primeira execução.
@@ -94,21 +94,21 @@ Os arquivos enviados são armazenados na pasta `uploads/` que é criada automati
 - **Fundo PDF**: Substitua o arquivo em `frontend/img/Fundo.png`
 - **Cores**: Edite as variáveis CSS no início do arquivo `index.html`
 
-##  Responsividade
+## 📱 Responsividade
 
 O sistema é totalmente responsivo e funciona em:
 - Desktop (recomendado)
 - Tablets
 - Smartphones
 
-##  Segurança
+## 🔒 Segurança
 
 - Autenticação por email/senha
 - Controle de acesso por perfil
 - Validação de arquivos no upload
 - Sanitização de dados de entrada
 
-##  Desenvolvimento
+## 🚀 Desenvolvimento
 
 ### Estrutura de Arquivos
 ```
@@ -127,8 +127,11 @@ CotacaoCobertura-main/
 - `npm start`: Inicia o servidor em produção
 - `npm run dev`: Inicia o servidor em modo desenvolvimento (com nodemon)
 
-##  Licença
+## 📞 Suporte
+
+Para suporte técnico ou dúvidas sobre o sistema, entre em contato com a equipe de desenvolvimento.
+
+## 📄 Licença
 
 Sistema desenvolvido exclusivamente para o Grupo Solução & Cia.
-
 Todos os direitos reservados © 2025.
