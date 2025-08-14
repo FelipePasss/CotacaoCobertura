@@ -1,77 +1,71 @@
-# Documentação para a ação de implantação de aplicativos Web do Azure: https://github.com/Azure/webapps-deploy
-# Mais ações do GitHub para o Azure: https://github.com/Azure/actions
-# Mais informações sobre Python, GitHub Actions e Azure App Service: https://aka.ms/python-webapps-actions
+name: Build and Deploy Python App to Azure Web App - CotacaoCobertra
 
-nome : Construir e implantar aplicativo Python no Azure Web App - CotacaoCobertra
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-sobre :
-  empurrar :
-    galhos :
-      - principal
-  fluxo de trabalho_despacho :
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
-empregos :
-  construir :
-    em execução : ubuntu-latest
-    permissões :
-      conteúdo : ler # Isso é necessário para ações/checkout
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    passos :
-      - usos : ações/checkout@v4
+      - name: Set up Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-      - nome : Configurar versão do Python
-        usos : ações/setup-python@v5
-        com :
-          versão python : ' 3.10 '
-
-      - nome : Criar e iniciar ambiente virtual
-        executar : |
+      - name: Create and activate virtual environment
+        run: |
           python -m venv venv
-          fonte venv/bin/ativar
+          source venv/bin/activate
       
-      - nome : Instalar dependências
-        executar : pip install -r requirements.txt
-        
-      # Opcional: adicione etapas para executar testes aqui (PyTest, suítes de testes Django, etc.)
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-      - nome : Artefato Zip para implantação
-        executar : zip release.zip ./* -r
+      # Optional: Add steps to run tests here (PyTest, Django test suites, etc.)
 
-      - nome : Carregar artefato para trabalhos de implantação
-        usos : ações/upload-artefato@v4
-        com :
-          nome : python-app
-          caminho : |
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
+
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-app
+          path: |
             release.zip
             !venv/
-  implantar :
-    em execução : ubuntu-latest
-    necessidades : construir
-    
-    permissões :
-      id-token : escrever # Isso é necessário para solicitar o JWT
-      conteúdo : ler # Isso é necessário para ações/checkout
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
 
-    passos :
-      - nome : Baixar artefato do trabalho de construção
-        usos : ações/download-artefato@v4
-        com :
-          nome : python-app
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: python-app
 
-      - nome : Descompactar artefato para implantação
-        executar : descompactar release.zip
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
 
-      
-      - nome : Login no Azure
-        usos : azure/login@v2
-        com :
-          ID do cliente : ${{ secrets.AZUREAPPSERVICE_CLIENTID_76718DE78F904B6ABFF2B75528A86728 }}
-          ID do locatário : ${{ secrets.AZUREAPPSERVICE_TENANTID_504991400977406A8F8F97DFF7FDD5F7 }}
-          ID da assinatura : ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_82E213C2BE7645BC80346651B4846D77 }}
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - nome : ' Implantar no aplicativo Web do Azure '
-        usos : azure/webapps-deploy@v3
-        id : implantar no aplicativo da web
-        com :
-          nome do aplicativo : ' CotacaoCobertra '
-          nome do slot : ' Produção '
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'cotacaocobertra-habcc8bbftf3g6hj'
+          slot-name: 'Production'
